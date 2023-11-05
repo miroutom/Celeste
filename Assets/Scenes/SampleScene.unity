@@ -250,6 +250,7 @@ MonoBehaviour:
   MoveSpeed: 5
   jumpForce: 7
   rb: {fileID: 0}
+  obstacleLayer: Obstacle
 --- !u!61 &390031810
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -348,7 +349,7 @@ GameObject:
   - component: {fileID: 711713853}
   - component: {fileID: 711713852}
   - component: {fileID: 711713851}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: TestTiles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
