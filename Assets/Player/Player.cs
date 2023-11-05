@@ -12,11 +12,14 @@ public class Player : MonoBehaviour
 
     public Rigidbody2D rb;
     private SpriteRenderer sprite;
+    private Collider2D coll;
+    [SerializeField] private string obstacleLayer;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         sprite = GetComponent<SpriteRenderer>();
+        coll = GetComponent<BoxCollider2D>();
     }
 
     void Update()
@@ -33,21 +36,28 @@ public class Player : MonoBehaviour
         Jump();
     }
 
-    void Move()
+    private void Move()
     {
         rb.velocity = new Vector2(horizontalInput * MoveSpeed, rb.velocity.y);
     }
 
-    void Jump()
+    private void Jump()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
         {
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             //rb.velocity = new Vector2(rb.velocity.x, jumpForce);
         }
     }
 
-    void Flip()
+    private bool IsGrounded()
+    {
+        RaycastHit2D hit = Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0, Vector2.down, .1f, LayerMask.GetMask(obstacleLayer));
+
+        return hit.collider != null;
+    }
+
+    private void Flip()
     {
         if (horizontalInput < 0)
         {
