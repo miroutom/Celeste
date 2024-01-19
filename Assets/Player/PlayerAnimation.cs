@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerAnimation : MonoBehaviour
 {
-    private enum AnimationState {idle, walk, jump, fall, climbDown, climbUp};
+    private enum AnimationState {idle, walk, jump, fall, climbDown, climbUp, death};
     private AnimationState state = AnimationState.idle;
 
     private Player player;
@@ -37,8 +37,14 @@ public class PlayerAnimation : MonoBehaviour
             state = AnimationState.fall;
         }
 
-        Debug.Log(player.rb.velocity.y);
+        if (player.isAlive == true)
+        {
+            anim.SetInteger("state", (int)state);
+        }
+        else
+        {
+            anim.SetInteger("state", (int)AnimationState.death);
+        }
 
-        anim.SetInteger("state", (int)state);
     }
 }

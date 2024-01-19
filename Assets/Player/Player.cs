@@ -1,11 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
     public float horizontalInput = 0;
     public float verticalInput = 0;
+
+    public bool isAlive = true;
 
     [SerializeField] private float MoveSpeed = 5;
     [SerializeField] private float jumpForce = 7;
@@ -14,12 +18,17 @@ public class Player : MonoBehaviour
     private SpriteRenderer sprite;
     private Collider2D coll;
     [SerializeField] private string obstacleLayer;
+    [SerializeField] private string killerTag = "killer";
+
+    private Animator anim;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         sprite = GetComponent<SpriteRenderer>();
         coll = GetComponent<BoxCollider2D>();
+
+        anim = GetComponent<Animator>();
     }
 
     void Update()
@@ -30,15 +39,33 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
-        Move();
-        Flip();
-        
-        Jump();
+        if (isAlive == true) 
+        {
+            Move();
+            Flip();
+            
+            Jump();
+        }
+        else 
+        {
+            StopMoving();
+            rb.gravityScale = 0;
+        }
+    }
+
+    private void Kill()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     private void Move()
     {
         rb.velocity = new Vector2(horizontalInput * MoveSpeed, rb.velocity.y);
+    }
+
+    private void StopMoving()
+    {
+        rb.velocity = Vector2.zero;
     }
 
     private void Jump()
@@ -68,5 +95,14 @@ public class Player : MonoBehaviour
             sprite.flipX = false;
         }
 
+    }
+
+    void OnCollisionEnter2D(Collision2D col) 
+    {
+        Debug.Log("Collision");
+        if (col.gameObject.tag == "Killer")
+        {
+            isAlive = false;
+        }
     }
 }
