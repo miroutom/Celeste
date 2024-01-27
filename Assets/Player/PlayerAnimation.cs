@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class PlayerAnimation : MonoBehaviour
 {
-    private enum AnimationState {idle, walk, jump, fall, climbDown, climbUp};
-    private AnimationState state = AnimationState.idle;
-
     private Player player;
     private Animator anim;
 
@@ -18,27 +15,6 @@ public class PlayerAnimation : MonoBehaviour
 
     void Update()
     {
-        if (player.horizontalInput != 0f)
-        {
-            state = AnimationState.walk;
-        }
-        else
-        {
-            state = AnimationState.idle;
-        }
-
-        if (player.rb.velocity.y > .3f)
-        {
-            state = AnimationState.jump;
-        }
-        
-        if (player.rb.velocity.y < -.3f)
-        {
-            state = AnimationState.fall;
-        }
-
-        Debug.Log(player.rb.velocity.y);
-
-        anim.SetInteger("state", (int)state);
+        anim.SetInteger("state", (int)player.state);
     }
 }
