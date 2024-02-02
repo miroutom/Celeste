@@ -192,7 +192,7 @@ public class Player : MonoBehaviour
 
     private bool IsGrounded()
     {
-        RaycastHit2D hit = Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0, Vector2.down, .1f, LayerMask.GetMask(obstacleLayer));
+        RaycastHit2D hit = Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0, Vector2.down, .05f, LayerMask.GetMask(obstacleLayer));
 
         return hit.collider != null;
     }
