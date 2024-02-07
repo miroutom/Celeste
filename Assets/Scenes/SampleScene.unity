@@ -9945,11 +9945,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5281784093990877296, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5.58
+      value: 13.87
       objectReference: {fileID: 0}
     - target: {fileID: 5281784093990877296, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -35.64
+      value: -24.66
       objectReference: {fileID: 0}
     - target: {fileID: 5281784093990877296, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
       propertyPath: m_LocalPosition.z
@@ -9988,24 +9988,76 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2006486164}
     - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
+      propertyPath: climbUpSpeed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
       propertyPath: leftOffset.x
-      value: -0.4
+      value: -0.58
+      objectReference: {fileID: 0}
+    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
+      propertyPath: leftOffset.y
+      value: -0.6
       objectReference: {fileID: 0}
     - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
       propertyPath: rightOffset.x
-      value: 0.4
+      value: 0.56
+      objectReference: {fileID: 0}
+    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
+      propertyPath: rightOffset.y
+      value: -0.6
       objectReference: {fileID: 0}
     - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
       propertyPath: bottomOffset.y
-      value: -0.45
+      value: -1.11
+      objectReference: {fileID: 0}
+    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
+      propertyPath: climbDownSpeed
+      value: -7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
+      propertyPath: tossAsideDelay
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
       propertyPath: collisionRadius
-      value: 0.17
+      value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
       propertyPath: groundLayer.m_Bits
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
+      propertyPath: leftBottomOffset.x
+      value: -0.58
+      objectReference: {fileID: 0}
+    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
+      propertyPath: leftBottomOffset.y
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
+      propertyPath: leftMiddleOffset.x
+      value: -0.58
+      objectReference: {fileID: 0}
+    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
+      propertyPath: leftMiddleOffset.y
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
+      propertyPath: rightBottomOffset.x
+      value: 0.56
+      objectReference: {fileID: 0}
+    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
+      propertyPath: rightBottomOffset.y
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
+      propertyPath: rightMiddleOffset.x
+      value: 0.56
+      objectReference: {fileID: 0}
+    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
+      propertyPath: rightMiddleOffset.y
+      value: -0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

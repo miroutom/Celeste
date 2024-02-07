@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -6,7 +5,7 @@ using UnityEngine.UI;
 public class Player : MonoBehaviour
 {
     [HideInInspector] 
-    public enum State {idle, walk, jump, fall, climbDown, climbUp, death, climbStatic, climb, };
+    public enum State {idle, walk, jump, fall, climbDown, climbUp, death, climbStatic, grab, wallJump, pullUp};
 
     [HideInInspector] 
     public State state;
@@ -18,9 +17,10 @@ public class Player : MonoBehaviour
     [SerializeField] private float MoveSpeed = 5;
 
     [Header("Climb")]
-    [SerializeField] private float ClimbUpSpeed = 2;
-    [SerializeField] private float ClimbDownSpeed = 5;
-    [SerializeField] private float ClimbSlip = -2f;
+    [SerializeField] private float climbUpSpeed = 2;
+    [SerializeField] private float climbDownSpeed = -5;
+    [SerializeField] private float climbSlip = -2f;
+    private RigidbodyConstraints2D basicConstraints;
 
     [Header("Jump")]
     [SerializeField] private float jumpForce = 7;
@@ -39,9 +39,15 @@ public class Player : MonoBehaviour
 
     [Header("Debug")]
     [SerializeField] private Text stateText;
+    private string textState = "";
 
     private bool onWall;
     private bool onGround;
+    private bool onPullUp;
+
+    private bool pullUp = false;
+
+    private bool wallJump = false;
 
     [Header("Collision")]
     [SerializeField] private float collisionRadius;
@@ -49,13 +55,22 @@ public class Player : MonoBehaviour
     [SerializeField] private Vector2 rightOffset;
     [SerializeField] private Vector2 leftOffset;
 
+    [Header("PullUp")]
+    [SerializeField] private float tossAsideDelay;
+    private float tossAsideTimer = 0f;
+
+    [SerializeField] private Vector2 rightBottomOffset; 
+    [SerializeField] private Vector2 rightMiddleOffset; 
+    [SerializeField] private Vector2 leftBottomOffset; 
+    [SerializeField] private Vector2 leftMiddleOffset; 
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         sprite = GetComponent<SpriteRenderer>();
         coll = GetComponent<BoxCollider2D>();
 
-
+        basicConstraints = rb.constraints;
         basicGravityScale = rb.gravityScale;
     }
 
@@ -65,152 +80,28 @@ public class Player : MonoBehaviour
         verticalInput = Input.GetAxisRaw("Vertical");
 
         onGround = Physics2D.OverlapCircle((Vector2)transform.position + bottomOffset, collisionRadius, groundLayer);
+
         onWall = Physics2D.OverlapCircle((Vector2)transform.position + rightOffset, collisionRadius, groundLayer) ||
             Physics2D.OverlapCircle((Vector2)transform.position + leftOffset, collisionRadius, groundLayer);
+
+        onPullUp = (!Physics2D.OverlapCircle((Vector2)transform.position + rightMiddleOffset, collisionRadius, groundLayer) &&
+                    Physics2D.OverlapCircle((Vector2)transform.position + rightBottomOffset, collisionRadius, groundLayer)) 
+                    ||
+                    (!Physics2D.OverlapCircle((Vector2)transform.position + leftMiddleOffset, collisionRadius, groundLayer) &&
+                    Physics2D.OverlapCircle((Vector2)transform.position + leftBottomOffset, collisionRadius, groundLayer));
+
+        //Debug.Log("On ground: " + onGround);
+        //Debug.Log("On wall: " + onWall);
+        Debug.Log("On pull up: " + onPullUp);
     }
 
     void FixedUpdate()
     {
-        if (state != State.death)
-        {
-            rb.gravityScale = basicGravityScale;
-
-            if ((rb.velocity.x == 0 && rb.velocity.y == 0) && state != State.climb)
-            {
-                state = State.idle;
-            }
-
-            if (rb.velocity.x != 0)
-            {
-                state = State.walk;
-            }
-
-
-
-            if (rb.velocity.y >= jumpBorder && state != State.climb && state != State.climbUp && state != State.climbDown)
-            {
-                state = State.jump;
-            }
-            
-            if (rb.velocity.y <= -jumpBorder)
-            {
-                state = State.fall;
-            }
-
-            if (onWall && Input.GetKey(KeyCode.LeftControl) && state != State.jump)
-            {
-                state = State.climb;
-            }
-
-            if ((Input.GetKeyDown(KeyCode.Space) && IsGrounded()) ||
-                ((state == State.climb || state == State.climbUp || state == State.climbDown) && Input.GetKeyDown(KeyCode.Space)) )
-            {
-                Debug.Log("Jump!");
-                state = State.jump;
-                Jump();
-            }
-
-            if (!Input.GetKey(KeyCode.LeftControl) && state == State.climb)
-            {
-                state = State.fall;
-            }
-        }
-
-        string textState = "";
-        switch(state)
-        {
-            case State.idle:
-            {
-                Move();
-                Flip();
-
-                textState = "Idle";
-                break;
-            }
-            case State.walk:
-            {
-                Move();
-                Flip();
-
-                textState = "Walk";
-                break;
-            }
-            case State.jump:
-            {
-                Move();
-                Flip();
-
-                textState = "Jump";
-                break;
-            }
-            case State.fall:
-            {
-                Move();
-                Flip();
-                
-                textState = "Fall";
-                break;
-            }
-            case State.climb:
-            {
-                bool climbUp = Input.GetKey(KeyCode.UpArrow);
-                bool climbDown = Input.GetKey(KeyCode.DownArrow);
-
-                rb.velocity = Vector2.zero;
-                rb.gravityScale = 0;
-
-                if ((climbUp && climbDown) || (!climbUp && !climbDown))
-                {
-                    state = State.climb;   
-                    textState = "Climb";
-                }
-                else if (climbUp)
-                {
-                    state = State.climbUp;
-                    rb.velocity = new Vector2(rb.velocity.x, 2 * ClimbUpSpeed);
-                    //rb.velocity += new Vector2(0, ClimbSlip);
-                    textState = "ClimbUp";
-                }
-                else if (climbDown)
-                {
-                    state = State.climbDown;
-                    rb.velocity = new Vector2(rb.velocity.x, -ClimbDownSpeed);
-                    //rb.velocity += new Vector2(0, ClimbSlip);
-                    textState = "ClimbDown";
-                }
-                RaycastHit2D hit;
-            
-                Vector2 rayDirection = Vector2.right;
-                if (sprite.flipX == true)
-                {
-                    rayDirection = Vector2.left;
-                }
-                hit = Physics2D.Raycast(transform.position + new Vector3(0, 0.5f, 0), rayDirection, coll.bounds.size.x / 2 + .1f, groundLayer);
-
-                if (hit.collider == null)
-                {
-                    state = State.jump;
-                    rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
-                    rb.gravityScale = basicGravityScale;
-                
-                    textState = "Jump";
-                }
-                //Debug.DrawRay(transform.position, Vector2.right * (coll.bounds.size.x / 2 + .1f), Color.black);
-
-                break;
-            }
-            case State.death:
-            {
-                StopMoving();
-
-                textState = "Death";
-                break;
-            }
-        }
-
+        state = getState();
+        Move();
+        Flip();
 
         //Debug
-
         stateText.text = "State: " + textState;
     }
 
@@ -226,38 +117,95 @@ public class Player : MonoBehaviour
         bool climbUp = Input.GetKey(KeyCode.UpArrow);
         bool climbDown = Input.GetKey(KeyCode.DownArrow);
 
-        if (onWall && jumpPressed)
+        rb.gravityScale = basicGravityScale;   
+
+        if (onPullUp && wallJump == false)
         {
-            Jump();
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce / 1.4f);
+
+            wallJump = true;
+            return State.jump;
+            //tossAsideTimer = tossAsideDelay;
         }
 
-        if (onWall && grabPressed)
+        if (onWall && jumpPressed && state != State.jump)
         {
+            rb.velocity = new Vector2(rb.velocity.x, 0f);
+            Jump();
+
+            wallJump = true;
+
+            textState = "WallJump";
+            return State.wallJump;
+        }
+
+        if (onWall && grabPressed && !wallJump)
+        {
+            rb.gravityScale = 0;
+            rb.velocity = new Vector2(rb.velocity.x, 0f);
             if (climbUp)
             {
+                rb.velocity = new Vector2(rb.velocity.x, climbUpSpeed);
 
+                textState = "ClimbUp";
+                return State.climbUp;
             }
             else if (climbDown)
             {
+                rb.velocity = new Vector2(rb.velocity.x, climbDownSpeed);
 
+                textState = "ClimbDown";
+                return State.climbDown;
             }
-            else 
-            {
 
-            }
+            textState = "Grab";
+            return State.grab;   
+        }
+
+        if (rb.velocity.y < -jumpBorder)
+        {
+            textState = "Fall";
+
+            wallJump = false;
+            return State.fall;
+        }
+
+        if (rb.velocity.y > jumpBorder)
+        {
+            textState = "Jump";
+            return State.jump;
         }
 
         if (onGround && jumpPressed)
         {
-            
+            Jump();   
+
+            textState = "Jump";
+            return State.jump;
         }
 
         if (rb.velocity.x != 0)
         {
+            textState = "Walk";
             return State.walk;
         }
 
+        textState = "Idle";
         return State.idle;
+    }
+
+    private void PullUp()
+    {
+        if (tossAsideTimer > 0)
+        {
+            tossAsideTimer -= Time.deltaTime;
+        }
+        else
+        {
+            pullUp = false;
+
+            rb.velocity = 20 * getPlayerDirection() + Vector2.up;
+        }
     }
 
     private void Kill()
@@ -300,6 +248,13 @@ public class Player : MonoBehaviour
     void OnDrawGizmos()
     {
         //Gizmos.DrawCube(kek, lol);
+        Gizmos.DrawWireSphere((Vector2)transform.position + bottomOffset, collisionRadius);
+        Gizmos.DrawWireSphere((Vector2)transform.position + rightOffset, collisionRadius);
+        Gizmos.DrawWireSphere((Vector2)transform.position + leftOffset, collisionRadius);
+        Gizmos.DrawWireSphere((Vector2)transform.position + rightBottomOffset, collisionRadius);
+        Gizmos.DrawWireSphere((Vector2)transform.position + rightMiddleOffset, collisionRadius);
+        Gizmos.DrawWireSphere((Vector2)transform.position + leftBottomOffset, collisionRadius);
+        Gizmos.DrawWireSphere((Vector2)transform.position + leftMiddleOffset, collisionRadius);
     }
 
     private bool IsGrounded()
@@ -319,6 +274,16 @@ public class Player : MonoBehaviour
         {
             sprite.flipX = false;
         }
+    }
+
+    private Vector2 getPlayerDirection()
+    {
+        if (sprite.flipX == true)
+        {
+            return Vector2.left;
+        }
+
+        return Vector2.right;
     }
 
     void OnCollisionEnter2D(Collision2D col) 
