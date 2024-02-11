@@ -5,7 +5,6 @@ TagManager:
   serializedVersion: 2
   tags:
   - Killer
-  - Checkpoint
   layers:
   - Default
   - TransparentFX
@@ -13,7 +12,7 @@ TagManager:
   - Obstacle
   - Water
   - UI
-  - Background
+  - 
   - 
   - 
   - 
@@ -40,18 +39,6 @@ TagManager:
   - 
   - 
   m_SortingLayers:
-  - name: Backgrd
-    uniqueID: 1235487617
-    locked: 0
-  - name: Backgrd1
-    uniqueID: 1916422247
-    locked: 0
-  - name: Backgrd2
-    uniqueID: 2487415629
-    locked: 0
-  - name: Backgrd3
-    uniqueID: 4094924791
-    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
