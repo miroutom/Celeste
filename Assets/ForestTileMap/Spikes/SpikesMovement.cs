@@ -31,7 +31,7 @@ public class SpikesMovement : MonoBehaviour
             );
         if (transform.position == targetPosition)
         {
-            StartCoroutine(DelayBeforeSwitchDirection();
+            StartCoroutine(DelayBeforeSwitchDirection());
         }
     }
 
