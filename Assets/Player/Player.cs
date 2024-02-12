@@ -20,8 +20,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float climbUpSpeed = 2;
     [SerializeField] private float climbDownSpeed = -5;
     [SerializeField] private float climbSlip = -2f;
-    private RigidbodyConstraints2D basicConstraints;
-
+    
     [Header("Jump")]
     [SerializeField] private float jumpForce = 7;
     [SerializeField] private float jumpBorder = .3f;
@@ -70,7 +69,6 @@ public class Player : MonoBehaviour
         sprite = GetComponent<SpriteRenderer>();
         coll = GetComponent<BoxCollider2D>();
 
-        basicConstraints = rb.constraints;
         basicGravityScale = rb.gravityScale;
     }
 
@@ -109,6 +107,7 @@ public class Player : MonoBehaviour
     {
         if (state == State.death)
         {
+            rb.constraints = RigidbodyConstraints2D.FreezeAll;
             return State.death;
         }
 

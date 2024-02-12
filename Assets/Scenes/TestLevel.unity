@@ -374,7 +374,7 @@ Transform:
   m_GameObject: {fileID: 283040675}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -20.3, y: -43.98, z: 0}
+  m_LocalPosition: {x: -20.3, y: -45.6, z: 0}
   m_LocalScale: {x: 262.73584, y: 2.325, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2386,7 +2386,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1948422660
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13500,78 +13500,6 @@ PrefabInstance:
       propertyPath: stateText
       value: 
       objectReference: {fileID: 2006486164}
-    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
-      propertyPath: climbUpSpeed
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
-      propertyPath: leftOffset.x
-      value: -0.58
-      objectReference: {fileID: 0}
-    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
-      propertyPath: leftOffset.y
-      value: -0.6
-      objectReference: {fileID: 0}
-    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
-      propertyPath: rightOffset.x
-      value: 0.56
-      objectReference: {fileID: 0}
-    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
-      propertyPath: rightOffset.y
-      value: -0.6
-      objectReference: {fileID: 0}
-    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
-      propertyPath: bottomOffset.y
-      value: -1.11
-      objectReference: {fileID: 0}
-    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
-      propertyPath: climbDownSpeed
-      value: -7
-      objectReference: {fileID: 0}
-    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
-      propertyPath: tossAsideDelay
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
-      propertyPath: collisionRadius
-      value: 0.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
-      propertyPath: groundLayer.m_Bits
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
-      propertyPath: leftBottomOffset.x
-      value: -0.58
-      objectReference: {fileID: 0}
-    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
-      propertyPath: leftBottomOffset.y
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
-      propertyPath: leftMiddleOffset.x
-      value: -0.58
-      objectReference: {fileID: 0}
-    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
-      propertyPath: leftMiddleOffset.y
-      value: -0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
-      propertyPath: rightBottomOffset.x
-      value: 0.56
-      objectReference: {fileID: 0}
-    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
-      propertyPath: rightBottomOffset.y
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
-      propertyPath: rightMiddleOffset.x
-      value: 0.56
-      objectReference: {fileID: 0}
-    - target: {fileID: 8981525126009049657, guid: 7fdc3cfe15596ca45be70598e1497a41, type: 3}
-      propertyPath: rightMiddleOffset.y
-      value: -0.5
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
