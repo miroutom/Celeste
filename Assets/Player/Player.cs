@@ -38,11 +38,18 @@ public class Player : MonoBehaviour
 
     [Header("Debug")]
     [SerializeField] private Text stateText;
+    [SerializeField] private Text onGroundText;
     private string textState = "";
+    private string textOnGround = "";
 
     private bool onWall;
     private bool onGround;
     private bool onPullUp;
+
+    private bool jumpPressed;
+    private bool grabPressed;
+    private bool climbUp;
+    private bool climbDown;
 
     private bool pullUp = false;
 
@@ -88,9 +95,28 @@ public class Player : MonoBehaviour
                     (!Physics2D.OverlapCircle((Vector2)transform.position + leftMiddleOffset, collisionRadius, groundLayer) &&
                     Physics2D.OverlapCircle((Vector2)transform.position + leftBottomOffset, collisionRadius, groundLayer));
 
+        jumpPressed = Input.GetKeyDown(KeyCode.Space);
+        grabPressed = Input.GetKey(KeyCode.LeftControl);
+        climbUp = Input.GetKey(KeyCode.UpArrow);
+        climbDown = Input.GetKey(KeyCode.DownArrow);
+
         //Debug.Log("On ground: " + onGround);
         //Debug.Log("On wall: " + onWall);
         Debug.Log("On pull up: " + onPullUp);
+
+
+        //Debug
+        stateText.text = "State: " + textState;
+
+        if (jumpPressed)
+        {
+            textOnGround = "True";
+        }
+        else
+        {
+            textOnGround = "False";
+        }
+        onGroundText.text = "OnGround: " + textOnGround;
     }
 
     void FixedUpdate()
@@ -98,9 +124,6 @@ public class Player : MonoBehaviour
         state = getState();
         Move();
         Flip();
-
-        //Debug
-        stateText.text = "State: " + textState;
     }
 
     private State getState()
@@ -111,10 +134,7 @@ public class Player : MonoBehaviour
             return State.death;
         }
 
-        bool jumpPressed = Input.GetKeyDown(KeyCode.Space);
-        bool grabPressed = Input.GetKey(KeyCode.LeftControl);
-        bool climbUp = Input.GetKey(KeyCode.UpArrow);
-        bool climbDown = Input.GetKey(KeyCode.DownArrow);
+        Debug.Log(jumpPressed);
 
         rb.gravityScale = basicGravityScale;   
 
@@ -127,7 +147,7 @@ public class Player : MonoBehaviour
             //tossAsideTimer = tossAsideDelay;
         }
 
-        if (onWall && jumpPressed && state != State.jump)
+        if (onWall && jumpPressed && (state == State.grab || state == State.climbDown || state == State.climbUp))
         {
             rb.velocity = new Vector2(rb.velocity.x, 0f);
             Jump();
@@ -161,6 +181,14 @@ public class Player : MonoBehaviour
             return State.grab;   
         }
 
+        if (onGround && jumpPressed)
+        {
+            Jump();   
+
+            textState = "Jump";
+            return State.jump;
+        }
+
         if (rb.velocity.y < -jumpBorder)
         {
             textState = "Fall";
@@ -171,14 +199,6 @@ public class Player : MonoBehaviour
 
         if (rb.velocity.y > jumpBorder)
         {
-            textState = "Jump";
-            return State.jump;
-        }
-
-        if (onGround && jumpPressed)
-        {
-            Jump();   
-
             textState = "Jump";
             return State.jump;
         }
