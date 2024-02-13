@@ -70,6 +70,10 @@ public class Player : MonoBehaviour
     [SerializeField] private Vector2 leftBottomOffset; 
     [SerializeField] private Vector2 leftMiddleOffset; 
 
+    [Header("Particles")]
+    [SerializeField] private GameObject jumpSmoke;
+    [SerializeField] private Vector3 jumpSmokeOffset; 
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -184,7 +188,7 @@ public class Player : MonoBehaviour
         if (onGround && jumpPressed)
         {
             Jump();   
-
+            spawnJumpSmoke();
             textState = "Jump";
             return State.jump;
         }
@@ -311,5 +315,12 @@ public class Player : MonoBehaviour
         {
             state = State.death;
         }
+    }
+
+    //Particles
+
+    void spawnJumpSmoke()
+    {
+        Instantiate(jumpSmoke, transform.position + jumpSmokeOffset,  Quaternion.identity);
     }
 }
