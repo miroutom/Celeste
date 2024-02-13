@@ -74,6 +74,14 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject jumpSmoke;
     [SerializeField] private Vector3 jumpSmokeOffset; 
 
+    [Header("Pseudo Parallax")]
+    [SerializeField] private GameObject clouds;
+    [SerializeField] private GameObject mountains; 
+    [SerializeField] private GameObject grass;
+    [SerializeField] private float cloudsMoveSpeed;
+    [SerializeField] private float mountainsMoveSpeed;
+    [SerializeField] private float grassMoveSpeed;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -128,6 +136,8 @@ public class Player : MonoBehaviour
         state = getState();
         Move();
         Flip();
+
+        PseudoParallax();
     }
 
     private State getState()
@@ -215,6 +225,13 @@ public class Player : MonoBehaviour
 
         textState = "Idle";
         return State.idle;
+    }
+
+    private void PseudoParallax()
+    {
+        clouds.transform.position += new Vector3(cloudsMoveSpeed * rb.velocity.x, 0, 0);
+        mountains.transform.position += new Vector3(mountainsMoveSpeed * rb.velocity.x, 0, 0);
+        grass.transform.position += new Vector3(grassMoveSpeed * rb.velocity.x, 0, 0);
     }
 
     private void PullUp()
