@@ -22,6 +22,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float climbSlip = -2f;
     
     [Header("Jump")]
+    private float jumpBufferTime = 0.2f;
+    private float jumpBufferCounter;
     [SerializeField] private float jumpForce = 7;
     [SerializeField] private float jumpBorder = .3f;
     [SerializeField] private float fallForce = 3;
@@ -112,9 +114,10 @@ public class Player : MonoBehaviour
         climbUp = Input.GetKey(KeyCode.UpArrow);
         climbDown = Input.GetKey(KeyCode.DownArrow);
 
-        //Debug.Log("On ground: " + onGround);
-        //Debug.Log("On wall: " + onWall);
-        Debug.Log("On pull up: " + onPullUp);
+
+
+        jumpBufferize();
+
 
 
         //Debug
@@ -195,11 +198,13 @@ public class Player : MonoBehaviour
             return State.grab;   
         }
 
-        if (onGround && jumpPressed)
+        if (onGround && (jumpBufferCounter > 0f))
         {
             Jump();   
             spawnJumpSmoke();
+
             textState = "Jump";
+
             return State.jump;
         }
 
@@ -225,6 +230,20 @@ public class Player : MonoBehaviour
 
         textState = "Idle";
         return State.idle;
+    }
+
+
+    private void jumpBufferize()
+    {
+        if (jumpPressed)
+        {
+            jumpBufferCounter = jumpBufferTime;
+        }
+        else
+        {
+            jumpBufferCounter -= Time.deltaTime;
+        }
+
     }
 
     private void PseudoParallax()
@@ -267,6 +286,7 @@ public class Player : MonoBehaviour
     private void Jump()
     {
         rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
+        jumpBufferCounter = 0f;
     }
 
 /*
