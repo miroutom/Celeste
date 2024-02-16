@@ -24,6 +24,10 @@ public class Player : MonoBehaviour
     [Header("Jump")]
     private float jumpBufferTime = 0.2f;
     private float jumpBufferCounter;
+
+    private float coyoteTime = 0.2f;
+    private float coyoteTimeCounter;
+    
     [SerializeField] private float jumpForce = 7;
     [SerializeField] private float jumpBorder = .3f;
     [SerializeField] private float fallForce = 3;
@@ -115,7 +119,7 @@ public class Player : MonoBehaviour
         climbDown = Input.GetKey(KeyCode.DownArrow);
 
 
-
+        timeCoyotize();
         jumpBufferize();
 
 
@@ -198,7 +202,7 @@ public class Player : MonoBehaviour
             return State.grab;   
         }
 
-        if (onGround && (jumpBufferCounter > 0f))
+        if ((coyoteTimeCounter > 0f) && (jumpBufferCounter > 0f))
         {
             Jump();   
             spawnJumpSmoke();
@@ -233,6 +237,18 @@ public class Player : MonoBehaviour
     }
 
 
+    private void timeCoyotize()
+    {
+        if (onGround)
+        {
+            coyoteTimeCounter = coyoteTime;
+        }
+        else
+        {
+            coyoteTimeCounter -= Time.deltaTime;
+        }
+    }
+
     private void jumpBufferize()
     {
         if (jumpPressed)
@@ -243,7 +259,6 @@ public class Player : MonoBehaviour
         {
             jumpBufferCounter -= Time.deltaTime;
         }
-
     }
 
     private void PseudoParallax()
