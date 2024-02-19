@@ -1,3 +1,4 @@
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -52,6 +53,8 @@ public class Player : MonoBehaviour
     private bool onGround;
     private bool onPullUp;
 
+    private bool landed;
+
     private bool jumpPressed;
     private bool grabPressed;
     private bool climbUp;
@@ -77,8 +80,11 @@ public class Player : MonoBehaviour
     [SerializeField] private Vector2 leftMiddleOffset; 
 
     [Header("Particles")]
-    [SerializeField] private GameObject jumpSmoke;
-    [SerializeField] private Vector3 jumpSmokeOffset; 
+    [SerializeField] private GameObject dustGameObject;
+    [SerializeField] private Vector3 jumpingDustOffset; 
+    [SerializeField] private Vector3 landingDustOffset; 
+
+    private GameObject dust;
 
     [Header("Pseudo Parallax")]
     [SerializeField] private GameObject clouds;
@@ -102,7 +108,11 @@ public class Player : MonoBehaviour
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
 
+        bool onGroundBeforeUpdate = onGround;
+    
         onGround = Physics2D.OverlapCircle((Vector2)transform.position + bottomOffset, collisionRadius, groundLayer);
+
+        landed = !onGroundBeforeUpdate && onGround;
 
         onWall = Physics2D.OverlapCircle((Vector2)transform.position + rightOffset, collisionRadius, groundLayer) ||
             Physics2D.OverlapCircle((Vector2)transform.position + leftOffset, collisionRadius, groundLayer);
@@ -143,6 +153,11 @@ public class Player : MonoBehaviour
         state = getState();
         Move();
         Flip();
+
+        if (landed)
+        {
+            spawnLandingDust();
+        }
 
         PseudoParallax();
     }
@@ -205,7 +220,7 @@ public class Player : MonoBehaviour
         if ((coyoteTimeCounter > 0f) && (jumpBufferCounter > 0f))
         {
             Jump();   
-            spawnJumpSmoke();
+            spawnJumpingDust();
 
             textState = "Jump";
 
@@ -371,8 +386,15 @@ public class Player : MonoBehaviour
 
     //Particles
 
-    void spawnJumpSmoke()
+    void spawnJumpingDust()
     {
-        Instantiate(jumpSmoke, transform.position + jumpSmokeOffset,  Quaternion.identity);
+        dust = Instantiate(dustGameObject, transform.position + jumpingDustOffset,  Quaternion.identity);
+        dust.GetComponent<Dust>().playJumpingDustAnimation();
+    }
+
+    void spawnLandingDust()
+    {
+        dust = Instantiate(dustGameObject, transform.position + landingDustOffset,  Quaternion.identity);
+        dust.GetComponent<Dust>().playLandingDustAnimation();
     }
 }
