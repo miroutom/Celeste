@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Killer
+  - Checkpoint
   layers:
   - Default
   - TransparentFX
@@ -39,6 +40,18 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Sky
+    uniqueID: 963608159
+    locked: 0
+  - name: Clouds
+    uniqueID: 714126187
+    locked: 0
+  - name: Mountain
+    uniqueID: 4286877459
+    locked: 0
+  - name: Grass
+    uniqueID: 2050786135
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
