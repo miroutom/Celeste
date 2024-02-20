@@ -1,4 +1,7 @@
+using System;
+using System.Collections;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -46,8 +49,10 @@ public class Player : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private Text stateText;
     [SerializeField] private Text onGroundText;
+    [SerializeField] private Text fatigueText;
     private string textState = "";
     private string textOnGround = "";
+    private string textFatigue = "";
 
     private bool onWall;
     private bool onGround;
@@ -94,11 +99,23 @@ public class Player : MonoBehaviour
     [SerializeField] private float mountainsMoveSpeed;
     [SerializeField] private float grassMoveSpeed;
 
+    [Header("Fatigue")]
+
+    private float fatigue = 0;
+    [SerializeField] private float maxFatigue = 10f;
+
+    //
+    private Color playerColor;
+    bool isFlashing = false;
+    [SerializeField] private float flashingFrequency = 0.2f;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         sprite = GetComponent<SpriteRenderer>();
         coll = GetComponent<BoxCollider2D>();
+
+        playerColor = sprite.color;
 
         basicGravityScale = rb.gravityScale;
     }
@@ -146,20 +163,61 @@ public class Player : MonoBehaviour
             textOnGround = "False";
         }
         onGroundText.text = "OnGround: " + textOnGround;
+
+        fatigueText.text = "Fatigue: " + Math.Round(fatigue, 1) + "/" + maxFatigue;
+    }
+
+    IEnumerator flashPlayer()
+    {
+        isFlashing = true;
+
+        while(fatigue >= maxFatigue)
+        {
+            if (sprite.color == playerColor)
+            {
+                sprite.color = Color.red;
+            }
+            else
+            {
+                sprite.color = playerColor;
+            }
+
+            yield return new WaitForSeconds(flashingFrequency);
+        }
+
+        isFlashing = false;
+        sprite.color = playerColor;
+
+        yield break;
     }
 
     void FixedUpdate()
     {
         state = getState();
-        Move();
-        Flip();
+
+        if (state != State.grab && state != State.climbUp && state != State.climbDown)
+        {
+            Move();
+            Flip();
+        }
+
 
         if (landed)
         {
             spawnLandingDust();
         }
 
-        PseudoParallax();
+        if (onGround)
+        {
+            fatigue = 0f;
+        }
+
+        if (fatigue >= maxFatigue && !isFlashing)
+        {  
+            StartCoroutine(flashPlayer());
+        }
+
+        //PseudoParallax();
     }
 
     private State getState()
@@ -187,6 +245,7 @@ public class Player : MonoBehaviour
         {
             rb.velocity = new Vector2(rb.velocity.x, 0f);
             Jump();
+            fatigue += 2.5f;
 
             wallJump = true;
 
@@ -198,11 +257,22 @@ public class Player : MonoBehaviour
         {
             rb.gravityScale = 0;
             rb.velocity = new Vector2(rb.velocity.x, 0f);
-            if (climbUp)
+
+            if (fatigue >= maxFatigue)
+            {
+                textState = "Slip";        
+
+                rb.velocity = new Vector2(rb.velocity.x, climbSlip);    
+
+                return State.climbDown;
+            }
+            else if (climbUp)
             {
                 rb.velocity = new Vector2(rb.velocity.x, climbUpSpeed);
 
                 textState = "ClimbUp";
+
+                fatigue += Time.deltaTime;
                 return State.climbUp;
             }
             else if (climbDown)
@@ -210,10 +280,14 @@ public class Player : MonoBehaviour
                 rb.velocity = new Vector2(rb.velocity.x, climbDownSpeed);
 
                 textState = "ClimbDown";
+        
+                fatigue += Time.deltaTime;
                 return State.climbDown;
             }
 
             textState = "Grab";
+
+            fatigue += Time.deltaTime;
             return State.grab;   
         }
 
