@@ -54,11 +54,6 @@ public class Player : MonoBehaviour
     private string textOnGround = "";
     private string textFatigue = "";
 
-    private bool onWall;
-    private bool onGround;
-    private bool onPullUp;
-
-    private bool landed;
 
     private bool jumpPressed;
     private bool grabPressed;
@@ -99,23 +94,13 @@ public class Player : MonoBehaviour
     [SerializeField] private float mountainsMoveSpeed;
     [SerializeField] private float grassMoveSpeed;
 
-    [Header("Fatigue")]
 
-    private float fatigue = 0;
-    [SerializeField] private float maxFatigue = 10f;
-
-    //
-    private Color playerColor;
-    bool isFlashing = false;
-    [SerializeField] private float flashingFrequency = 0.2f;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         sprite = GetComponent<SpriteRenderer>();
         coll = GetComponent<BoxCollider2D>();
-
-        playerColor = sprite.color;
 
         basicGravityScale = rb.gravityScale;
     }
@@ -150,7 +135,6 @@ public class Player : MonoBehaviour
         jumpBufferize();
 
 
-
         //Debug
         stateText.text = "State: " + textState;
 
@@ -167,29 +151,7 @@ public class Player : MonoBehaviour
         fatigueText.text = "Fatigue: " + Math.Round(fatigue, 1) + "/" + maxFatigue;
     }
 
-    IEnumerator flashPlayer()
-    {
-        isFlashing = true;
 
-        while(fatigue >= maxFatigue)
-        {
-            if (sprite.color == playerColor)
-            {
-                sprite.color = Color.red;
-            }
-            else
-            {
-                sprite.color = playerColor;
-            }
-
-            yield return new WaitForSeconds(flashingFrequency);
-        }
-
-        isFlashing = false;
-        sprite.color = playerColor;
-
-        yield break;
-    }
 
     void FixedUpdate()
     {
@@ -325,7 +287,6 @@ public class Player : MonoBehaviour
         return State.idle;
     }
 
-
     private void timeCoyotize()
     {
         if (onGround)
@@ -381,34 +342,12 @@ public class Player : MonoBehaviour
         rb.velocity = new Vector2(horizontalInput * MoveSpeed, rb.velocity.y);
     }
 
-    private void StopMoving()
-    {
-        rb.velocity = Vector2.zero;
-        rb.gravityScale = 0;
-    }
-
     private void Jump()
     {
         rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
         jumpBufferCounter = 0f;
     }
 
-/*
-    private bool onWall()
-    {
-        RaycastHit2D hit;
-        Vector2 boxDirection = Vector2.right;
-        if (sprite.flipX == true)
-        {
-            boxDirection = Vector2.left;
-        }
-
-        //hit = Physics2D.BoxCast(coll.bounds.center - coll.bounds.size / 4, coll.bounds.size / 2, 0, boxDirection, .1f, LayerMask.GetMask(groundLayer));      
-        hit = Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0, boxDirection, .1f, LayerMask.GetMask(groundLayer));
-
-        return hit.collider != null;
-    }
-*/
     void OnDrawGizmos()
     {
         //Gizmos.DrawCube(kek, lol);
@@ -421,12 +360,6 @@ public class Player : MonoBehaviour
         Gizmos.DrawWireSphere((Vector2)transform.position + leftMiddleOffset, collisionRadius);
     }
 
-    private bool IsGrounded()
-    {
-        RaycastHit2D hit = Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0, Vector2.down, .05f, groundLayer);
-
-        return hit.collider != null;
-    }
 
     private void Flip()
     {
