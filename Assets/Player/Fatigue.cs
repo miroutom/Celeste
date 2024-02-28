@@ -22,12 +22,6 @@ public class Fatigue : MonoBehaviour
         sprite = GetComponent<SpriteRenderer>();      
         playerColor = sprite.color;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     
     IEnumerator flashPlayer()
     {

@@ -14,36 +14,18 @@ public class Player : MonoBehaviour
     [HideInInspector] 
     public State state;
 
-    private float horizontalInput = 0;
-    private float verticalInput = 0;
-
-    [Header("Movement")]
-    [SerializeField] private float MoveSpeed = 5;
-
     [Header("Climb")]
     [SerializeField] private float climbUpSpeed = 2;
     [SerializeField] private float climbDownSpeed = -5;
     [SerializeField] private float climbSlip = -2f;
-    
-    [Header("Jump")]
-    private float jumpBufferTime = 0.2f;
-    private float jumpBufferCounter;
 
-    private float coyoteTime = 0.2f;
-    private float coyoteTimeCounter;
-    
-    [SerializeField] private float jumpForce = 7;
-    [SerializeField] private float jumpBorder = .3f;
-    [SerializeField] private float fallForce = 3;
-
-    private float basicGravityScale;
 
     private Rigidbody2D rb;
     private SpriteRenderer sprite;
     private Collider2D coll;
 
     [Header("Obstacle")]
-    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] public LayerMask groundLayer;
     [SerializeField] private string killerTag = "killer";
 
     [Header("Debug")]
@@ -54,87 +36,15 @@ public class Player : MonoBehaviour
     private string textOnGround = "";
     private string textFatigue = "";
 
-
-    private bool jumpPressed;
-    private bool grabPressed;
-    private bool climbUp;
-    private bool climbDown;
-
-    private bool pullUp = false;
-
-    private bool wallJump = false;
-
-    [Header("Collision")]
-    [SerializeField] private float collisionRadius;
-    [SerializeField] private Vector2 bottomOffset;
-    [SerializeField] private Vector2 rightOffset;
-    [SerializeField] private Vector2 leftOffset;
-
-    [Header("PullUp")]
-    [SerializeField] private float tossAsideDelay;
-    private float tossAsideTimer = 0f;
-
-    [SerializeField] private Vector2 rightBottomOffset; 
-    [SerializeField] private Vector2 rightMiddleOffset; 
-    [SerializeField] private Vector2 leftBottomOffset; 
-    [SerializeField] private Vector2 leftMiddleOffset; 
-
-    [Header("Particles")]
-    [SerializeField] private GameObject dustGameObject;
-    [SerializeField] private Vector3 jumpingDustOffset; 
-    [SerializeField] private Vector3 landingDustOffset; 
-
-    private GameObject dust;
-
-    [Header("Pseudo Parallax")]
-    [SerializeField] private GameObject clouds;
-    [SerializeField] private GameObject mountains; 
-    [SerializeField] private GameObject grass;
-    [SerializeField] private float cloudsMoveSpeed;
-    [SerializeField] private float mountainsMoveSpeed;
-    [SerializeField] private float grassMoveSpeed;
-
-
-
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         sprite = GetComponent<SpriteRenderer>();
         coll = GetComponent<BoxCollider2D>();
-
-        basicGravityScale = rb.gravityScale;
     }
 
     void Update()
     {
-        horizontalInput = Input.GetAxisRaw("Horizontal");
-        verticalInput = Input.GetAxisRaw("Vertical");
-
-        bool onGroundBeforeUpdate = onGround;
-    
-        onGround = Physics2D.OverlapCircle((Vector2)transform.position + bottomOffset, collisionRadius, groundLayer);
-
-        landed = !onGroundBeforeUpdate && onGround;
-
-        onWall = Physics2D.OverlapCircle((Vector2)transform.position + rightOffset, collisionRadius, groundLayer) ||
-            Physics2D.OverlapCircle((Vector2)transform.position + leftOffset, collisionRadius, groundLayer);
-
-        onPullUp = (!Physics2D.OverlapCircle((Vector2)transform.position + rightMiddleOffset, collisionRadius, groundLayer) &&
-                    Physics2D.OverlapCircle((Vector2)transform.position + rightBottomOffset, collisionRadius, groundLayer)) 
-                    ||
-                    (!Physics2D.OverlapCircle((Vector2)transform.position + leftMiddleOffset, collisionRadius, groundLayer) &&
-                    Physics2D.OverlapCircle((Vector2)transform.position + leftBottomOffset, collisionRadius, groundLayer));
-
-        jumpPressed = Input.GetKeyDown(KeyCode.Space);
-        grabPressed = Input.GetKey(KeyCode.LeftControl);
-        climbUp = Input.GetKey(KeyCode.UpArrow);
-        climbDown = Input.GetKey(KeyCode.DownArrow);
-
-
-        timeCoyotize();
-        jumpBufferize();
-
-
         //Debug
         stateText.text = "State: " + textState;
 
@@ -150,8 +60,6 @@ public class Player : MonoBehaviour
 
         fatigueText.text = "Fatigue: " + Math.Round(fatigue, 1) + "/" + maxFatigue;
     }
-
-
 
     void FixedUpdate()
     {
@@ -181,7 +89,7 @@ public class Player : MonoBehaviour
 
         //PseudoParallax();
     }
-
+    
     private State getState()
     {
         if (state == State.death)
@@ -189,8 +97,6 @@ public class Player : MonoBehaviour
             rb.constraints = RigidbodyConstraints2D.FreezeAll;
             return State.death;
         }
-
-        Debug.Log(jumpPressed);
 
         rb.gravityScale = basicGravityScale;   
 
@@ -287,37 +193,6 @@ public class Player : MonoBehaviour
         return State.idle;
     }
 
-    private void timeCoyotize()
-    {
-        if (onGround)
-        {
-            coyoteTimeCounter = coyoteTime;
-        }
-        else
-        {
-            coyoteTimeCounter -= Time.deltaTime;
-        }
-    }
-
-    private void jumpBufferize()
-    {
-        if (jumpPressed)
-        {
-            jumpBufferCounter = jumpBufferTime;
-        }
-        else
-        {
-            jumpBufferCounter -= Time.deltaTime;
-        }
-    }
-
-    private void PseudoParallax()
-    {
-        clouds.transform.position += new Vector3(cloudsMoveSpeed * rb.velocity.x, 0, 0);
-        mountains.transform.position += new Vector3(mountainsMoveSpeed * rb.velocity.x, 0, 0);
-        grass.transform.position += new Vector3(grassMoveSpeed * rb.velocity.x, 0, 0);
-    }
-
     private void PullUp()
     {
         if (tossAsideTimer > 0)
@@ -340,24 +215,6 @@ public class Player : MonoBehaviour
     private void Move()
     {
         rb.velocity = new Vector2(horizontalInput * MoveSpeed, rb.velocity.y);
-    }
-
-    private void Jump()
-    {
-        rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
-        jumpBufferCounter = 0f;
-    }
-
-    void OnDrawGizmos()
-    {
-        //Gizmos.DrawCube(kek, lol);
-        Gizmos.DrawWireSphere((Vector2)transform.position + bottomOffset, collisionRadius);
-        Gizmos.DrawWireSphere((Vector2)transform.position + rightOffset, collisionRadius);
-        Gizmos.DrawWireSphere((Vector2)transform.position + leftOffset, collisionRadius);
-        Gizmos.DrawWireSphere((Vector2)transform.position + rightBottomOffset, collisionRadius);
-        Gizmos.DrawWireSphere((Vector2)transform.position + rightMiddleOffset, collisionRadius);
-        Gizmos.DrawWireSphere((Vector2)transform.position + leftBottomOffset, collisionRadius);
-        Gizmos.DrawWireSphere((Vector2)transform.position + leftMiddleOffset, collisionRadius);
     }
 
 
@@ -393,15 +250,4 @@ public class Player : MonoBehaviour
 
     //Particles
 
-    void spawnJumpingDust()
-    {
-        dust = Instantiate(dustGameObject, transform.position + jumpingDustOffset,  Quaternion.identity);
-        dust.GetComponent<Dust>().playJumpingDustAnimation();
-    }
-
-    void spawnLandingDust()
-    {
-        dust = Instantiate(dustGameObject, transform.position + landingDustOffset,  Quaternion.identity);
-        dust.GetComponent<Dust>().playLandingDustAnimation();
-    }
 }

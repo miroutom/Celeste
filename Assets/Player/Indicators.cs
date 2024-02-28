@@ -4,22 +4,67 @@ using UnityEngine;
 
 public class Indicators : MonoBehaviour
 {
+    [HideInInspector] 
+    public bool onWall;
+    [HideInInspector] 
+    public bool onGround;
+    [HideInInspector] 
+    public bool onPullUp;
+    [HideInInspector] 
+    public bool landed;
+    private bool pullUp = false;
+    private bool wallJump = false;
 
-    private bool onWall;
-    private bool onGround;
-    private bool onPullUp;
-    private bool landed;
+    [Header("Collision detectors")]
+    [SerializeField] private float collisionRadius;
+    [SerializeField] private Vector2 bottomOffset;
+    [SerializeField] private Vector2 rightOffset;
+    [SerializeField] private Vector2 leftOffset;
 
+    [Header("PullUp detectors")]
+    [SerializeField] private float tossAsideDelay;
+    private float tossAsideTimer = 0f;
 
-    // Start is called before the first frame update
+    [SerializeField] private Vector2 rightBottomOffset; 
+    [SerializeField] private Vector2 rightMiddleOffset; 
+    [SerializeField] private Vector2 leftBottomOffset; 
+    [SerializeField] private Vector2 leftMiddleOffset; 
+
+    [Header("Base")]
+    private Player player;
+
     void Start()
     {
-        
+        player = GetComponent<Player>();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+        bool onGroundBeforeUpdate = onGround;
+    
+        onGround = Physics2D.OverlapCircle((Vector2)transform.position + bottomOffset, collisionRadius, player.groundLayer);
+
+        landed = !onGroundBeforeUpdate && onGround;
+
+        onWall = Physics2D.OverlapCircle((Vector2)transform.position + rightOffset, collisionRadius, player.groundLayer) ||
+            Physics2D.OverlapCircle((Vector2)transform.position + leftOffset, collisionRadius, player.groundLayer);
+
+        onPullUp = (!Physics2D.OverlapCircle((Vector2)transform.position + rightMiddleOffset, collisionRadius, player.groundLayer) &&
+                    Physics2D.OverlapCircle((Vector2)transform.position + rightBottomOffset, collisionRadius, player.groundLayer)) 
+                    ||
+                    (!Physics2D.OverlapCircle((Vector2)transform.position + leftMiddleOffset, collisionRadius, player.groundLayer) &&
+                    Physics2D.OverlapCircle((Vector2)transform.position + leftBottomOffset, collisionRadius, player.groundLayer));        
+    }
+
+    void OnDrawGizmos()
+    {
+        //Gizmos.DrawCube(kek, lol);
+        Gizmos.DrawWireSphere((Vector2)transform.position + bottomOffset, collisionRadius);
+        Gizmos.DrawWireSphere((Vector2)transform.position + rightOffset, collisionRadius);
+        Gizmos.DrawWireSphere((Vector2)transform.position + leftOffset, collisionRadius);
+        Gizmos.DrawWireSphere((Vector2)transform.position + rightBottomOffset, collisionRadius);
+        Gizmos.DrawWireSphere((Vector2)transform.position + rightMiddleOffset, collisionRadius);
+        Gizmos.DrawWireSphere((Vector2)transform.position + leftBottomOffset, collisionRadius);
+        Gizmos.DrawWireSphere((Vector2)transform.position + leftMiddleOffset, collisionRadius);
     }
 }
