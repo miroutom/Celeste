@@ -1,36 +1,113 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using JetBrains.Annotations;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
-    public enum State {idle, walk, jump, fall, climbDown, climbUp, death, climbStatic, climb};
+    [HideInInspector] 
+    public enum State {idle, walk, jump, fall, climbDown, climbUp, death, climbStatic, grab, wallJump, pullUp};
 
+    [HideInInspector] 
     public State state;
 
-    public float horizontalInput = 0;
-    public float verticalInput = 0;
+    private float horizontalInput = 0;
+    private float verticalInput = 0;
 
+    [Header("Movement")]
     [SerializeField] private float MoveSpeed = 5;
-    [SerializeField] private float ClimbUpSpeed = 2;
-    [SerializeField] private float ClimbDownSpeed = 5;
-    [SerializeField] private float ClimbSlip = -2f;
 
+    [Header("Climb")]
+    [SerializeField] private float climbUpSpeed = 2;
+    [SerializeField] private float climbDownSpeed = -5;
+    [SerializeField] private float climbSlip = -2f;
+    
+    [Header("Jump")]
+    private float jumpBufferTime = 0.2f;
+    private float jumpBufferCounter;
+
+    private float coyoteTime = 0.2f;
+    private float coyoteTimeCounter;
+    
     [SerializeField] private float jumpForce = 7;
     [SerializeField] private float jumpBorder = .3f;
+    [SerializeField] private float fallForce = 3;
 
-    public Rigidbody2D rb;
+    private float basicGravityScale;
+
+    private Rigidbody2D rb;
     private SpriteRenderer sprite;
     private Collider2D coll;
-    [SerializeField] private string obstacleLayer;
+
+    [Header("Obstacle")]
+    [SerializeField] private LayerMask groundLayer;
     [SerializeField] private string killerTag = "killer";
 
-    private Animator anim;
+    [Header("Debug")]
+    [SerializeField] private Text stateText;
+    [SerializeField] private Text onGroundText;
+    [SerializeField] private Text fatigueText;
+    private string textState = "";
+    private string textOnGround = "";
+    private string textFatigue = "";
+
+    private bool onWall;
+    private bool onGround;
+    private bool onPullUp;
+
+    private bool landed;
+
+    private bool jumpPressed;
+    private bool grabPressed;
+    private bool climbUp;
+    private bool climbDown;
+
+    private bool pullUp = false;
+
+    private bool wallJump = false;
+
+    [Header("Collision")]
+    [SerializeField] private float collisionRadius;
+    [SerializeField] private Vector2 bottomOffset;
+    [SerializeField] private Vector2 rightOffset;
+    [SerializeField] private Vector2 leftOffset;
+
+    [Header("PullUp")]
+    [SerializeField] private float tossAsideDelay;
+    private float tossAsideTimer = 0f;
+
+    [SerializeField] private Vector2 rightBottomOffset; 
+    [SerializeField] private Vector2 rightMiddleOffset; 
+    [SerializeField] private Vector2 leftBottomOffset; 
+    [SerializeField] private Vector2 leftMiddleOffset; 
+
+    [Header("Particles")]
+    [SerializeField] private GameObject dustGameObject;
+    [SerializeField] private Vector3 jumpingDustOffset; 
+    [SerializeField] private Vector3 landingDustOffset; 
+
+    private GameObject dust;
+
+    [Header("Pseudo Parallax")]
+    [SerializeField] private GameObject clouds;
+    [SerializeField] private GameObject mountains; 
+    [SerializeField] private GameObject grass;
+    [SerializeField] private float cloudsMoveSpeed;
+    [SerializeField] private float mountainsMoveSpeed;
+    [SerializeField] private float grassMoveSpeed;
+
+    [Header("Fatigue")]
+
+    private float fatigue = 0;
+    [SerializeField] private float maxFatigue = 10f;
+
+    //
+    private Color playerColor;
+    bool isFlashing = false;
+    [SerializeField] private float flashingFrequency = 0.2f;
 
     void Start()
     {
@@ -38,121 +115,260 @@ public class Player : MonoBehaviour
         sprite = GetComponent<SpriteRenderer>();
         coll = GetComponent<BoxCollider2D>();
 
-        anim = GetComponent<Animator>();
+        playerColor = sprite.color;
+
+        basicGravityScale = rb.gravityScale;
     }
 
     void Update()
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
+
+        bool onGroundBeforeUpdate = onGround;
+    
+        onGround = Physics2D.OverlapCircle((Vector2)transform.position + bottomOffset, collisionRadius, groundLayer);
+
+        landed = !onGroundBeforeUpdate && onGround;
+
+        onWall = Physics2D.OverlapCircle((Vector2)transform.position + rightOffset, collisionRadius, groundLayer) ||
+            Physics2D.OverlapCircle((Vector2)transform.position + leftOffset, collisionRadius, groundLayer);
+
+        onPullUp = (!Physics2D.OverlapCircle((Vector2)transform.position + rightMiddleOffset, collisionRadius, groundLayer) &&
+                    Physics2D.OverlapCircle((Vector2)transform.position + rightBottomOffset, collisionRadius, groundLayer)) 
+                    ||
+                    (!Physics2D.OverlapCircle((Vector2)transform.position + leftMiddleOffset, collisionRadius, groundLayer) &&
+                    Physics2D.OverlapCircle((Vector2)transform.position + leftBottomOffset, collisionRadius, groundLayer));
+
+        jumpPressed = Input.GetKeyDown(KeyCode.Space);
+        grabPressed = Input.GetKey(KeyCode.LeftControl);
+        climbUp = Input.GetKey(KeyCode.UpArrow);
+        climbDown = Input.GetKey(KeyCode.DownArrow);
+
+
+        timeCoyotize();
+        jumpBufferize();
+
+
+
+        //Debug
+        stateText.text = "State: " + textState;
+
+        if (jumpPressed)
+        {
+            textOnGround = "True";
+        }
+        else
+        {
+            textOnGround = "False";
+        }
+        onGroundText.text = "OnGround: " + textOnGround;
+
+        fatigueText.text = "Fatigue: " + Math.Round(fatigue, 1) + "/" + maxFatigue;
+    }
+
+    IEnumerator flashPlayer()
+    {
+        isFlashing = true;
+
+        while(fatigue >= maxFatigue)
+        {
+            if (sprite.color == playerColor)
+            {
+                sprite.color = Color.red;
+            }
+            else
+            {
+                sprite.color = playerColor;
+            }
+
+            yield return new WaitForSeconds(flashingFrequency);
+        }
+
+        isFlashing = false;
+        sprite.color = playerColor;
+
+        yield break;
     }
 
     void FixedUpdate()
     {
-        if (rb.velocity.x == 0 && rb.velocity.y == 0)
+        state = getState();
+
+        if (state != State.grab && state != State.climbUp && state != State.climbDown)
         {
-            state = State.idle;
+            Move();
+            Flip();
+        }
+
+
+        if (landed)
+        {
+            spawnLandingDust();
+        }
+
+        if (onGround)
+        {
+            fatigue = 0f;
+        }
+
+        if (fatigue >= maxFatigue && !isFlashing)
+        {  
+            StartCoroutine(flashPlayer());
+        }
+
+        //PseudoParallax();
+    }
+
+    private State getState()
+    {
+        if (state == State.death)
+        {
+            rb.constraints = RigidbodyConstraints2D.FreezeAll;
+            return State.death;
+        }
+
+        Debug.Log(jumpPressed);
+
+        rb.gravityScale = basicGravityScale;   
+
+        if (onPullUp && wallJump == false)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce / 1.4f);
+
+            wallJump = true;
+            return State.jump;
+            //tossAsideTimer = tossAsideDelay;
+        }
+
+        if (onWall && jumpPressed && (state == State.grab || state == State.climbDown || state == State.climbUp))
+        {
+            rb.velocity = new Vector2(rb.velocity.x, 0f);
+            Jump();
+            fatigue += 2.5f;
+
+            wallJump = true;
+
+            textState = "WallJump";
+            return State.wallJump;
+        }
+
+        if (onWall && grabPressed && !wallJump)
+        {
+            rb.gravityScale = 0;
+            rb.velocity = new Vector2(rb.velocity.x, 0f);
+
+            if (fatigue >= maxFatigue)
+            {
+                textState = "Slip";        
+
+                rb.velocity = new Vector2(rb.velocity.x, climbSlip);    
+
+                return State.climbDown;
+            }
+            else if (climbUp)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, climbUpSpeed);
+
+                textState = "ClimbUp";
+
+                fatigue += Time.deltaTime;
+                return State.climbUp;
+            }
+            else if (climbDown)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, climbDownSpeed);
+
+                textState = "ClimbDown";
+        
+                fatigue += Time.deltaTime;
+                return State.climbDown;
+            }
+
+            textState = "Grab";
+
+            fatigue += Time.deltaTime;
+            return State.grab;   
+        }
+
+        if ((coyoteTimeCounter > 0f) && (jumpBufferCounter > 0f))
+        {
+            Jump();   
+            spawnJumpingDust();
+
+            textState = "Jump";
+
+            return State.jump;
+        }
+
+        if (rb.velocity.y < -jumpBorder)
+        {
+            textState = "Fall";
+
+            wallJump = false;
+            return State.fall;
+        }
+
+        if (rb.velocity.y > jumpBorder)
+        {
+            textState = "Jump";
+            return State.jump;
         }
 
         if (rb.velocity.x != 0)
         {
-            state = State.walk;
+            textState = "Walk";
+            return State.walk;
         }
 
-        if (state is State.idle or State.walk && Input.GetKeyDown(KeyCode.Space) && IsGrounded() ||
-            (state is State.climb or State.climbUp or State.climbDown && Input.GetKeyDown(KeyCode.Space)) )
+        textState = "Idle";
+        return State.idle;
+    }
+
+
+    private void timeCoyotize()
+    {
+        if (onGround)
         {
-            state = State.jump;
-            Jump();
+            coyoteTimeCounter = coyoteTime;
         }
-
-        if (rb.velocity.y >= jumpBorder && state != State.climb && state != State.climbUp && state != State.climbDown)
+        else
         {
-            state = State.jump;
+            coyoteTimeCounter -= Time.deltaTime;
         }
+    }
 
-        if (rb.velocity.y <= -jumpBorder)
+    private void jumpBufferize()
+    {
+        if (jumpPressed)
         {
-            state = State.fall;
+            jumpBufferCounter = jumpBufferTime;
         }
-
-        if (IsBumped() && Input.GetKey(KeyCode.Tab) && state is not State.jump)
+        else
         {
-            state = State.climb;
+            jumpBufferCounter -= Time.deltaTime;
         }
+    }
 
-        if (!Input.GetKey(KeyCode.Tab) && state == State.climb)
+    private void PseudoParallax()
+    {
+        clouds.transform.position += new Vector3(cloudsMoveSpeed * rb.velocity.x, 0, 0);
+        mountains.transform.position += new Vector3(mountainsMoveSpeed * rb.velocity.x, 0, 0);
+        grass.transform.position += new Vector3(grassMoveSpeed * rb.velocity.x, 0, 0);
+    }
+
+    private void PullUp()
+    {
+        if (tossAsideTimer > 0)
         {
-            state = State.fall;
+            tossAsideTimer -= Time.deltaTime;
         }
-
-        switch(state)
+        else
         {
-            case State.idle:
-            {
-                Move();
-                Flip();
+            pullUp = false;
 
-                break;
-            }
-            case State.walk:
-            {
-                Move();
-                Flip();
-
-                break;
-            }
-            case State.jump:
-            {
-
-                Move();
-                Flip();
-
-                break;
-            }
-            case State.fall:
-            {
-                Move();
-                Flip();
-
-                break;
-            }
-            case State.climb:
-            {
-                bool climbUp = Input.GetKey(KeyCode.W);
-                bool climbDown = Input.GetKey(KeyCode.S);
-
-                rb.velocity = Vector2.zero;
-                if ((climbUp && climbDown) || (!climbUp && !climbDown))
-                {
-                    state = State.climb;
-                    rb.velocity += new Vector2(0, 0.2f);      
-                }
-                else if (climbUp)
-                {
-                    state = State.climbUp;
-                    rb.velocity = new Vector2(rb.velocity.x, 2 * ClimbUpSpeed);
-                    rb.velocity += new Vector2(0, ClimbSlip);
-                }
-                else if (climbDown)
-                {
-                    state = State.climbDown;
-                    rb.velocity = new Vector2(rb.velocity.x, -ClimbDownSpeed);
-                    rb.velocity += new Vector2(0, ClimbSlip);
-                }
-
-                break;
-            }
-            case State.death:
-            {
-                StopMoving();
-                rb.gravityScale = 0;
-
-                break;
-            }
+            rb.velocity = 20 * getPlayerDirection() + Vector2.up;
         }
-
-        Debug.Log(state);
     }
 
     private void Kill()
@@ -168,31 +384,46 @@ public class Player : MonoBehaviour
     private void StopMoving()
     {
         rb.velocity = Vector2.zero;
+        rb.gravityScale = 0;
     }
 
     private void Jump()
     {
         rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
+        jumpBufferCounter = 0f;
     }
 
-    private bool IsBumped()
+/*
+    private bool onWall()
     {
         RaycastHit2D hit;
+        Vector2 boxDirection = Vector2.right;
         if (sprite.flipX == true)
         {
-            hit = Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0, Vector2.left, .1f, LayerMask.GetMask(obstacleLayer));
-        }
-        else 
-        {
-            hit = Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0, Vector2.right, .1f, LayerMask.GetMask(obstacleLayer));      
+            boxDirection = Vector2.left;
         }
 
+        //hit = Physics2D.BoxCast(coll.bounds.center - coll.bounds.size / 4, coll.bounds.size / 2, 0, boxDirection, .1f, LayerMask.GetMask(groundLayer));      
+        hit = Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0, boxDirection, .1f, LayerMask.GetMask(groundLayer));
+
         return hit.collider != null;
+    }
+*/
+    void OnDrawGizmos()
+    {
+        //Gizmos.DrawCube(kek, lol);
+        Gizmos.DrawWireSphere((Vector2)transform.position + bottomOffset, collisionRadius);
+        Gizmos.DrawWireSphere((Vector2)transform.position + rightOffset, collisionRadius);
+        Gizmos.DrawWireSphere((Vector2)transform.position + leftOffset, collisionRadius);
+        Gizmos.DrawWireSphere((Vector2)transform.position + rightBottomOffset, collisionRadius);
+        Gizmos.DrawWireSphere((Vector2)transform.position + rightMiddleOffset, collisionRadius);
+        Gizmos.DrawWireSphere((Vector2)transform.position + leftBottomOffset, collisionRadius);
+        Gizmos.DrawWireSphere((Vector2)transform.position + leftMiddleOffset, collisionRadius);
     }
 
     private bool IsGrounded()
     {
-        RaycastHit2D hit = Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0, Vector2.down, .1f, LayerMask.GetMask(obstacleLayer));
+        RaycastHit2D hit = Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0, Vector2.down, .05f, groundLayer);
 
         return hit.collider != null;
     }
@@ -207,15 +438,37 @@ public class Player : MonoBehaviour
         {
             sprite.flipX = false;
         }
+    }
 
+    private Vector2 getPlayerDirection()
+    {
+        if (sprite.flipX == true)
+        {
+            return Vector2.left;
+        }
+
+        return Vector2.right;
     }
 
     void OnCollisionEnter2D(Collision2D col) 
     {
-        Debug.Log("Collision");
         if (col.gameObject.tag == "Killer")
         {
             state = State.death;
         }
+    }
+
+    //Particles
+
+    void spawnJumpingDust()
+    {
+        dust = Instantiate(dustGameObject, transform.position + jumpingDustOffset,  Quaternion.identity);
+        dust.GetComponent<Dust>().playJumpingDustAnimation();
+    }
+
+    void spawnLandingDust()
+    {
+        dust = Instantiate(dustGameObject, transform.position + landingDustOffset,  Quaternion.identity);
+        dust.GetComponent<Dust>().playLandingDustAnimation();
     }
 }
