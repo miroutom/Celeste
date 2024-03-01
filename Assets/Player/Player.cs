@@ -100,8 +100,8 @@ public class Player : MonoBehaviour
     [SerializeField] private float grassMoveSpeed;
 
     [Header("Fatigue")]
-
-    private float fatigue = 0;
+    
+    public float fatigue = 0;
     [SerializeField] private float maxFatigue = 10f;
 
     //

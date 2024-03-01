@@ -6,8 +6,9 @@ public class DebugMode : MonoBehaviour
     static bool debugMode = false;
     private GameObject player;
     private Player playerComponent;
-    static Stopwatch timer = new Stopwatch();
-    private Room room;
+    private static Stopwatch timer = new();
+    private GameObject checkpoint;
+    private Checkpoint checkpointComponent;
 
 
     private int deathCount = 0;
@@ -25,6 +26,8 @@ public class DebugMode : MonoBehaviour
         playerComponent = player.GetComponent<Player>();
         deathCount = PlayerPrefs.GetInt(DeathCountKey, 0);
         minutes = PlayerPrefs.GetInt(Minutes, 0);
+        checkpoint = GameObject.Find("Checkpoint");
+        checkpointComponent = checkpoint.GetComponent<Checkpoint>();    
       
     }
     // Update is called once per frame
@@ -92,10 +95,11 @@ public class DebugMode : MonoBehaviour
             player.transform.position.ToString());
         PrintOnScreen(0, 20, "Player State: " +
             playerComponent.state.ToString());
-        PrintOnScreen(0, 30, "Deaths: " + deathCount.ToString());
-        PrintOnScreen(0, 40, "Timer: " + timer.Elapsed.Seconds.ToString());
-        PrintOnScreen(0, 50, "Minutes spent: " + minutes.ToString());
-        PrintOnScreen(0, 60, "Current room: " + room.ToString());
+        PrintOnScreen(0, 30, "Fatugie: " + playerComponent.fatigue.ToString());
+        PrintOnScreen(0, 40, "Deaths: " + deathCount.ToString());
+        PrintOnScreen(0, 50, "Timer: " + timer.Elapsed.Seconds.ToString());
+        PrintOnScreen(0, 60, "Minutes spent: " + minutes.ToString());
+        PrintOnScreen(0, 70, "Current checkpoint: " + checkpointComponent.index.ToString());
     }
 
     void PrintOnScreen(int x, int y, string str)
