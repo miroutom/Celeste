@@ -8,18 +8,6 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
-    [HideInInspector] 
-    public enum State {idle, walk, jump, fall, climbDown, climbUp, death, climbStatic, grab, wallJump, pullUp};
-
-    [HideInInspector] 
-    public State state;
-
-    [Header("Climb")]
-    [SerializeField] private float climbUpSpeed = 2;
-    [SerializeField] private float climbDownSpeed = -5;
-    [SerializeField] private float climbSlip = -2f;
-
-
     private Rigidbody2D rb;
     private SpriteRenderer sprite;
     private Collider2D coll;
@@ -36,18 +24,41 @@ public class Player : MonoBehaviour
     private string textOnGround = "";
     private string textFatigue = "";
 
+    private PlayerState playerState;
+    private PlayerJump jump;
+    private PlayerClimb climb;
+    private Indicators indicators;
+    private Fatigue fatigue;
+    private PlayerMovement movement;
+    private PlayerParticles particles;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         sprite = GetComponent<SpriteRenderer>();
         coll = GetComponent<BoxCollider2D>();
+
+        playerState = GetComponent<PlayerState>();
+        jump = GetComponent<PlayerJump>();
+        climb = GetComponent<PlayerClimb>();
+        indicators = GetComponent<Indicators>();
+        fatigue = GetComponent<Fatigue>();
+        movement = GetComponent<PlayerMovement>();
+        particles = GetComponent<PlayerParticles>();
     }
 
     void Update()
     {
+        jump.timeCoyotize();
+        jump.jumpBufferize();   
+
         //Debug
+        debugState();
         stateText.text = "State: " + textState;
 
+        //Debug.Log(jump.coyoteTimeCounter + " " + jump.jumpBufferCounter);
+
+        /*
         if (jumpPressed)
         {
             textOnGround = "True";
@@ -59,51 +70,147 @@ public class Player : MonoBehaviour
         onGroundText.text = "OnGround: " + textOnGround;
 
         fatigueText.text = "Fatigue: " + Math.Round(fatigue, 1) + "/" + maxFatigue;
-    }
+        */
 
+
+    }
     void FixedUpdate()
     {
-        state = getState();
+        playerState.state = playerState.getState();
+        manageState();
 
-        if (state != State.grab && state != State.climbUp && state != State.climbDown)
+        if (playerState.state != PlayerState.State.grab && 
+            playerState.state != PlayerState.State.climbUp && 
+            playerState.state != PlayerState.State.climbDown && 
+            playerState.state != PlayerState.State.slip)
         {
-            Move();
-            Flip();
+            movement.Move();
+            movement.Flip();
         }
 
-
-        if (landed)
+        if (indicators.landed)
         {
-            spawnLandingDust();
+            particles.spawnLandingDust();
         }
 
-        if (onGround)
+        if (indicators.onGround)
         {
-            fatigue = 0f;
+            fatigue.nullifyFatigue();
         }
 
-        if (fatigue >= maxFatigue && !isFlashing)
+        if (fatigue.fatigue >= fatigue.maxFatigue && !fatigue.isFlashing)
         {  
-            StartCoroutine(flashPlayer());
+            StartCoroutine(fatigue.FlashPlayer());
         }
 
         //PseudoParallax();
     }
     
-    private State getState()
+    private void manageState()
     {
-        if (state == State.death)
+        rb.gravityScale = jump.basicGravityScale;   
+        switch(playerState.state)
         {
-            rb.constraints = RigidbodyConstraints2D.FreezeAll;
-            return State.death;
+            case PlayerState.State.death:
+            {
+                rb.constraints = RigidbodyConstraints2D.FreezeAll;
+
+                break;
+            }
+            case PlayerState.State.pullUp:
+            {
+                jump.pullUpJump();
+                indicators.wallJump = true;
+
+                playerState.state = PlayerState.State.jump;
+                break;
+            }
+            case PlayerState.State.jump:
+            {
+                jump.Jump();
+                particles.spawnJumpingDust();
+                playerState.state = PlayerState.State.flight;
+                                
+                break;
+            }
+            case PlayerState.State.wallJump:
+            {
+                rb.velocity = new Vector2(rb.velocity.x, 0f);
+                jump.Jump();
+                fatigue.JumpTick();
+
+                indicators.wallJump = true;
+
+                playerState.state = PlayerState.State.flight;
+                break;
+            }
+            case PlayerState.State.slip:
+            {
+                rb.velocity = new Vector2(rb.velocity.x, 0f);
+                rb.gravityScale = 0;
+                climb.Slip();
+
+                break;
+            }
+            case PlayerState.State.climbUp:
+            {
+                rb.gravityScale = 0;
+
+                climb.ClimbUp();
+                fatigue.Tick();
+                
+                break;
+            }
+            case PlayerState.State.climbDown:
+            {
+                rb.gravityScale = 0;
+
+                climb.ClimbDown();
+                fatigue.Tick();
+
+                break;
+            }
+            case PlayerState.State.grab:
+            {
+
+                rb.velocity = new Vector2(rb.velocity.x, 0f);
+                rb.gravityScale = 0;
+
+                fatigue.Tick();
+                
+                break;
+            }
+            case PlayerState.State.fall:
+            {
+                indicators.wallJump = false;
+
+                break;
+            }
+            case PlayerState.State.flight:
+            {
+                break;
+            }
+            case PlayerState.State.walk:
+            {
+                break;
+            }
+            case PlayerState.State.idle:
+            {
+                break;
+            }
+            default:
+            {
+                break;
+            }
         }
 
-        rb.gravityScale = basicGravityScale;   
+    }
 
+    void getState()
+    {
+        /*
         if (onPullUp && wallJump == false)
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce / 1.4f);
-
             wallJump = true;
             return State.jump;
             //tossAsideTimer = tossAsideDelay;
@@ -129,8 +236,6 @@ public class Player : MonoBehaviour
             if (fatigue >= maxFatigue)
             {
                 textState = "Slip";        
-
-                rb.velocity = new Vector2(rb.velocity.x, climbSlip);    
 
                 return State.climbDown;
             }
@@ -190,21 +295,8 @@ public class Player : MonoBehaviour
         }
 
         textState = "Idle";
-        return State.idle;
-    }
+        */
 
-    private void PullUp()
-    {
-        if (tossAsideTimer > 0)
-        {
-            tossAsideTimer -= Time.deltaTime;
-        }
-        else
-        {
-            pullUp = false;
-
-            rb.velocity = 20 * getPlayerDirection() + Vector2.up;
-        }
     }
 
     private void Kill()
@@ -212,25 +304,7 @@ public class Player : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    private void Move()
-    {
-        rb.velocity = new Vector2(horizontalInput * MoveSpeed, rb.velocity.y);
-    }
-
-
-    private void Flip()
-    {
-        if (horizontalInput < 0)
-        {
-            sprite.flipX = true;
-        }
-        else if (horizontalInput > 0)
-        {
-            sprite.flipX = false;
-        }
-    }
-
-    private Vector2 getPlayerDirection()
+    public Vector2 getPlayerDirection()
     {
         if (sprite.flipX == true)
         {
@@ -244,10 +318,92 @@ public class Player : MonoBehaviour
     {
         if (col.gameObject.tag == "Killer")
         {
-            state = State.death;
+            playerState.state = PlayerState.State.death;
         }
     }
 
-    //Particles
+    void debugState()
+    {
+        switch(playerState.state)
+        {
+            case PlayerState.State.death:
+            {
+                textState = "death";
 
+                break;
+            }
+            case PlayerState.State.pullUp:
+            {
+                textState = "pull up";
+
+                break;
+            }
+            case PlayerState.State.wallJump:
+            {
+                textState = "wall jump";
+
+                break;
+            }
+            case PlayerState.State.slip:
+            {
+                textState = "slip";
+
+                break;
+            }
+            case PlayerState.State.climbUp:
+            {
+                textState = "climb up";
+                
+                break;
+            }
+            case PlayerState.State.climbDown:
+            {
+                textState = "climb down";
+
+                break;
+            }
+            case PlayerState.State.grab:
+            {
+                textState = "grab";
+                
+                break;
+            }
+            case PlayerState.State.fall:
+            {
+                textState = "fall";
+
+                break;
+            }
+            case PlayerState.State.jump:
+            {
+                textState = "jump";
+
+                break;
+            }
+            case PlayerState.State.walk:
+            {
+                textState = "walk";
+
+                break;
+            }
+            case PlayerState.State.flight:
+            {
+                textState = "flight";
+
+                break;
+            }
+            case PlayerState.State.idle:
+            {
+                textState = "idle";
+
+                break;
+            }
+            default:
+            {
+                textState = "Empty";
+                
+                break;
+            }
+        }
+    }
 }

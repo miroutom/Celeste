@@ -4,17 +4,18 @@ using UnityEngine;
 
 public class PlayerAnimation : MonoBehaviour
 {
-    private Player player;
+    private PlayerState playerState;
     private Animator anim;
 
     void Start()
     {
-        player = GetComponent<Player>();
+        playerState = GetComponent<PlayerState>();
         anim = GetComponent<Animator>();
     }
 
     void Update()
     {
-        anim.SetInteger("state", (int)player.state);
+        Debug.Log("Lol: " + playerState.state);
+        anim.SetInteger("state", (int)playerState.state);
     }
 }

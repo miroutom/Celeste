@@ -11,13 +11,13 @@ public class PlayerParticles : MonoBehaviour
     private GameObject dust;
 
     // Update is called once per frame
-    void spawnJumpingDust()
+    public void spawnJumpingDust()
     {
         dust = Instantiate(dustGameObject, transform.position + jumpingDustOffset,  Quaternion.identity);
         dust.GetComponent<Dust>().playJumpingDustAnimation();
     }
 
-    void spawnLandingDust()
+    public void spawnLandingDust()
     {
         dust = Instantiate(dustGameObject, transform.position + landingDustOffset,  Quaternion.identity);
         dust.GetComponent<Dust>().playLandingDustAnimation();

@@ -6,13 +6,16 @@ public class Fatigue : MonoBehaviour
 {
     [Header("Fatigue")]
 
-    private float fatigue = 0;
-    [SerializeField] private float maxFatigue = 10f;
+    public float fatigue = 0;
+    [SerializeField] public float maxFatigue = 10f;
 
     //
     private Color playerColor;
-    bool isFlashing = false;
+    public bool isFlashing = false;
     [SerializeField] private float flashingFrequency = 0.2f;
+
+    [SerializeField] public float fatigueTick = 1f;
+    [SerializeField] public float fatigueJumpTick = 2.5f;
 
     private SpriteRenderer sprite;
 
@@ -23,7 +26,7 @@ public class Fatigue : MonoBehaviour
         playerColor = sprite.color;
     }
     
-    IEnumerator flashPlayer()
+    public IEnumerator FlashPlayer()
     {
         isFlashing = true;
 
@@ -45,5 +48,20 @@ public class Fatigue : MonoBehaviour
         sprite.color = playerColor;
 
         yield break;
+    }
+
+    public void Tick()
+    {
+        fatigue += fatigueTick * Time.deltaTime;
+    }
+
+    public void JumpTick()
+    {
+        fatigue += fatigueJumpTick;
+    }
+
+    public void nullifyFatigue()
+    {
+        fatigue = 0f;
     }
 }

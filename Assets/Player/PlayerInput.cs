@@ -23,6 +23,7 @@ public class PlayerInput : MonoBehaviour
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
         
+
         jumpPressed = Input.GetKeyDown(KeyCode.Space);
         grabPressed = Input.GetKey(KeyCode.LeftControl);
         climbUp = Input.GetKey(KeyCode.UpArrow);

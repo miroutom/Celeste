@@ -6,16 +6,17 @@ public class PlayerJump : MonoBehaviour
 {
     [Header("Jump")]
     private float jumpBufferTime = 0.2f;
-    private float jumpBufferCounter;
+    public float jumpBufferCounter;
 
     private float coyoteTime = 0.2f;
-    private float coyoteTimeCounter;
+    public float coyoteTimeCounter;
     
     [SerializeField] private float jumpForce = 7;
-    [SerializeField] private float jumpBorder = .3f;
+    [SerializeField] private float pullUpJumpForce = 5;
+    [SerializeField] public float jumpBorder = .3f;
     [SerializeField] private float fallForce = 3;
 
-    private float basicGravityScale;
+    public float basicGravityScale;
 
     private Rigidbody2D rb;
     private Indicators indicators;
@@ -58,5 +59,11 @@ public class PlayerJump : MonoBehaviour
     {
         rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
         jumpBufferCounter = 0f;
+    }
+
+    public void pullUpJump()
+    {
+        //rb.velocity = new Vector2(rb.velocity.x, jumpForce / 1.4f);
+        rb.velocity = new Vector2(rb.velocity.x, pullUpJumpForce);
     }
 }

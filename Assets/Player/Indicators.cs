@@ -12,8 +12,9 @@ public class Indicators : MonoBehaviour
     public bool onPullUp;
     [HideInInspector] 
     public bool landed;
-    private bool pullUp = false;
-    private bool wallJump = false;
+    
+    public bool pullUp = false;
+    public bool wallJump = false;
 
     [Header("Collision detectors")]
     [SerializeField] private float collisionRadius;
@@ -22,8 +23,8 @@ public class Indicators : MonoBehaviour
     [SerializeField] private Vector2 leftOffset;
 
     [Header("PullUp detectors")]
-    [SerializeField] private float tossAsideDelay;
-    private float tossAsideTimer = 0f;
+    [SerializeField] public float tossAsideDelay;
+    public float tossAsideTimer = 0f;
 
     [SerializeField] private Vector2 rightBottomOffset; 
     [SerializeField] private Vector2 rightMiddleOffset; 

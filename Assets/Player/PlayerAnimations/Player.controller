@@ -42,7 +42,7 @@ AnimatorStateTransition:
   m_Conditions:
   - m_ConditionMode: 6
     m_ConditionEvent: state
-    m_EventTreshold: 2
+    m_EventTreshold: 12
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 9171769391712893350}
   m_Solo: 0
@@ -217,7 +217,7 @@ AnimatorStateTransition:
   m_Conditions:
   - m_ConditionMode: 6
     m_ConditionEvent: state
-    m_EventTreshold: 2
+    m_EventTreshold: 12
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 9171769391712893350}
   m_Solo: 0
@@ -524,7 +524,7 @@ AnimatorStateTransition:
   m_Conditions:
   - m_ConditionMode: 6
     m_ConditionEvent: state
-    m_EventTreshold: 2
+    m_EventTreshold: 12
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 9171769391712893350}
   m_Solo: 0
@@ -819,7 +819,7 @@ AnimatorStateMachine:
     m_Position: {x: 380, y: 70, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 9171769391712893350}
-    m_Position: {x: 30, y: -250, z: 0}
+    m_Position: {x: 20, y: -330, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 846236387348509763}
     m_Position: {x: 890, y: -370, z: 0}
@@ -1085,7 +1085,7 @@ AnimatorStateTransition:
   m_Conditions:
   - m_ConditionMode: 6
     m_ConditionEvent: state
-    m_EventTreshold: 2
+    m_EventTreshold: 12
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 9171769391712893350}
   m_Solo: 0
@@ -1346,7 +1346,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PlayerJump
+  m_Name: PlayerFlight
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
