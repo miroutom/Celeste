@@ -15,7 +15,6 @@ public class PlayerAnimation : MonoBehaviour
 
     void Update()
     {
-        Debug.Log("Lol: " + playerState.state);
         anim.SetInteger("state", (int)playerState.state);
     }
 }

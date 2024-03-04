@@ -8,10 +8,14 @@ public class PlayerInput : MonoBehaviour
     public float horizontalInput = 0;
     [HideInInspector] 
     public float verticalInput = 0;
+
     [HideInInspector] 
     public bool jumpPressed;
     [HideInInspector] 
+    public bool dashPressed;
+    [HideInInspector] 
     public bool grabPressed;
+    
     [HideInInspector] 
     public bool climbUp;
     [HideInInspector] 
@@ -23,10 +27,12 @@ public class PlayerInput : MonoBehaviour
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
         
-
         jumpPressed = Input.GetKeyDown(KeyCode.Space);
+        dashPressed = Input.GetKeyDown(KeyCode.LeftShift);
         grabPressed = Input.GetKey(KeyCode.LeftControl);
+
         climbUp = Input.GetKey(KeyCode.UpArrow);
         climbDown = Input.GetKey(KeyCode.DownArrow);
+
     }
 }

@@ -14,8 +14,17 @@ GameObject:
   - component: {fileID: 8168683111435551475}
   - component: {fileID: 8201817874778461755}
   - component: {fileID: 8981525126009049657}
+  - component: {fileID: 2466966114353191418}
+  - component: {fileID: 539331683084786252}
+  - component: {fileID: 3168303301474607836}
+  - component: {fileID: 2177170290057008871}
+  - component: {fileID: 1290908188071803723}
+  - component: {fileID: 8921918440213783294}
+  - component: {fileID: 5730938631529822987}
+  - component: {fileID: 2480183598865011638}
+  - component: {fileID: 4075526309102265388}
   - component: {fileID: 8185900330927216572}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -79,7 +88,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 806557989, guid: aedd4e337be60d641bf764e219d3b2f9, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.7843138, g: 0.7843138, b: 0.7843138, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -194,38 +203,170 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b1df3b61e4eae143a9f0e5dcfed4d9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  state: 0
-  MoveSpeed: 10
-  climbUpSpeed: 5
-  climbDownSpeed: -7
-  climbSlip: -2
-  jumpForce: 16
-  jumpBorder: 0.3
-  fallForce: 3
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
   killerTag: killer
   stateText: {fileID: 0}
   onGroundText: {fileID: 0}
+  fatigueText: {fileID: 0}
+--- !u!114 &2466966114353191418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1841307083464513713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fe622d2e47f9594bb1542ad5977b476, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fatigue: 0
+  maxFatigue: 10
+  isFlashing: 0
+  flashingFrequency: 0.2
+  fatigueTick: 1
+  fatigueJumpTick: 2.5
+--- !u!114 &539331683084786252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1841307083464513713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f84b59a07112e8646a3152f5282a7b45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onWall: 0
+  onGround: 0
+  onPullUp: 0
+  landed: 0
+  pullUp: 0
+  wallJump: 0
   collisionRadius: 0.05
   bottomOffset: {x: 0, y: -1.11}
   rightOffset: {x: 0.56, y: -0.6}
   leftOffset: {x: -0.58, y: -0.6}
   tossAsideDelay: 1
+  tossAsideTimer: 0
   rightBottomOffset: {x: 0.56, y: -1}
   rightMiddleOffset: {x: 0.56, y: -0.5}
   leftBottomOffset: {x: -0.58, y: -1}
   leftMiddleOffset: {x: -0.58, y: -0.5}
+--- !u!114 &3168303301474607836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1841307083464513713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 849e7027fc8cc0641b9217ad3d0311d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isDashing: 0
+  hasDashed: 0
+  dashPower: 20
+  dashTimer: 0.3
+  shadowGameObject: {fileID: 8145975239062825002, guid: c02343a8f81572a4d9be8297635aaf14, type: 3}
+--- !u!114 &2177170290057008871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1841307083464513713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bd9c23c653431e4888158f484a366ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  climbUpSpeed: 5
+  climbDownSpeed: -9
+  climbSlip: -13
+--- !u!114 &1290908188071803723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1841307083464513713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db29f0725b502e942b0df0390e846201, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jumpBufferCounter: 0
+  coyoteTimeCounter: 0
+  jumpForce: 16
+  pullUpJumpForce: 5
+  jumpBorder: 0.3
+  fallForce: 3
+  basicGravityScale: 0
+--- !u!114 &8921918440213783294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1841307083464513713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04aa2d7c51c8a654881fc3b95e4c6104, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MoveSpeed: 10
+--- !u!114 &5730938631529822987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1841307083464513713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d66b778db8824c84587d5e9a65a008ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   dustGameObject: {fileID: 1631215358783872310, guid: d391a91b30470e54baed30b13baf86d1, type: 3}
   jumpingDustOffset: {x: 0, y: -0.5, z: 0}
   landingDustOffset: {x: 0, y: -0.6, z: 0}
-  clouds: {fileID: 0}
-  mountains: {fileID: 0}
-  grass: {fileID: 0}
-  cloudsMoveSpeed: 0.001
-  mountainsMoveSpeed: 0.0001
-  grassMoveSpeed: 0
+--- !u!114 &2480183598865011638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1841307083464513713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41cdcedd362c2cd4ea3c8123558ecbf4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  state: 0
+--- !u!114 &4075526309102265388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1841307083464513713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 943691e3922102f468179a18c957f80b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  horizontalInput: 0
+  verticalInput: 0
+  jumpPressed: 0
+  dashPressed: 0
+  grabPressed: 0
+  climbUp: 0
+  climbDown: 0
 --- !u!114 &8185900330927216572
 MonoBehaviour:
   m_ObjectHideFlags: 0

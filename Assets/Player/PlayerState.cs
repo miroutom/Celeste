@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerState : MonoBehaviour
 {
     [HideInInspector] 
-    public enum State {idle, walk, jump, fall, climbDown, climbUp, death, climbStatic, grab, wallJump, pullUp, slip, flight};
+    public enum State {idle, walk, jump, fall, climbDown, climbUp, death, climbStatic, grab, wallJump, pullUp, slip, flight, dash};
 
     [HideInInspector] 
     public State state;
@@ -14,6 +14,7 @@ public class PlayerState : MonoBehaviour
     private PlayerInput input;
     private Fatigue fatigue;
     private PlayerJump jump;
+    private PlayerDash dash;
 
     private Rigidbody2D rb;
 
@@ -23,6 +24,7 @@ public class PlayerState : MonoBehaviour
         input = GetComponent<PlayerInput>();
         fatigue = GetComponent<Fatigue>();
         jump = GetComponent<PlayerJump>();
+        dash = GetComponent<PlayerDash>();
 
         rb = GetComponent<Rigidbody2D>();
     }
@@ -32,6 +34,11 @@ public class PlayerState : MonoBehaviour
         if (state == State.death)
         {
             return State.death;
+        }
+
+        if ((!dash.hasDashed && dash.dashCanBeDone()) || dash.isDashing)
+        {
+            return State.dash;
         }
 
         if (indicators.onPullUp && indicators.wallJump == false)

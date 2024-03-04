@@ -66,4 +66,14 @@ public class PlayerJump : MonoBehaviour
         //rb.velocity = new Vector2(rb.velocity.x, jumpForce / 1.4f);
         rb.velocity = new Vector2(rb.velocity.x, pullUpJumpForce);
     }
+
+    public void nullifyGravity()
+    {
+        rb.gravityScale = 0;
+    }
+
+    public void refreshGravity()
+    {
+        rb.gravityScale = basicGravityScale;
+    }
 }

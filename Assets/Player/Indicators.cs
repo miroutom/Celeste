@@ -47,8 +47,10 @@ public class Indicators : MonoBehaviour
 
         landed = !onGroundBeforeUpdate && onGround;
 
-        onWall = Physics2D.OverlapCircle((Vector2)transform.position + rightOffset, collisionRadius, player.groundLayer) ||
-            Physics2D.OverlapCircle((Vector2)transform.position + leftOffset, collisionRadius, player.groundLayer);
+        onWall = ((Physics2D.OverlapCircle((Vector2)transform.position + rightOffset, collisionRadius, player.groundLayer) &&
+            player.getPlayerDirection() == Vector2.right) || 
+            (Physics2D.OverlapCircle((Vector2)transform.position + leftOffset, collisionRadius, player.groundLayer) &&
+            player.getPlayerDirection() == Vector2.left) );
 
         onPullUp = (!Physics2D.OverlapCircle((Vector2)transform.position + rightMiddleOffset, collisionRadius, player.groundLayer) &&
                     Physics2D.OverlapCircle((Vector2)transform.position + rightBottomOffset, collisionRadius, player.groundLayer)) 

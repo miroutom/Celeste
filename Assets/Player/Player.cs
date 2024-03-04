@@ -27,10 +27,12 @@ public class Player : MonoBehaviour
     private PlayerState playerState;
     private PlayerJump jump;
     private PlayerClimb climb;
+    private PlayerDash dash;
     private Indicators indicators;
     private Fatigue fatigue;
     private PlayerMovement movement;
     private PlayerParticles particles;
+    private PlayerInput input;
 
     void Start()
     {
@@ -40,11 +42,13 @@ public class Player : MonoBehaviour
 
         playerState = GetComponent<PlayerState>();
         jump = GetComponent<PlayerJump>();
+        dash = GetComponent<PlayerDash>();
         climb = GetComponent<PlayerClimb>();
         indicators = GetComponent<Indicators>();
         fatigue = GetComponent<Fatigue>();
         movement = GetComponent<PlayerMovement>();
         particles = GetComponent<PlayerParticles>();
+        input = GetComponent<PlayerInput>();
     }
 
     void Update()
@@ -72,7 +76,7 @@ public class Player : MonoBehaviour
         fatigueText.text = "Fatigue: " + Math.Round(fatigue, 1) + "/" + maxFatigue;
         */
 
-
+        Debug.Log(rb.velocity);
     }
     void FixedUpdate()
     {
@@ -82,9 +86,17 @@ public class Player : MonoBehaviour
         if (playerState.state != PlayerState.State.grab && 
             playerState.state != PlayerState.State.climbUp && 
             playerState.state != PlayerState.State.climbDown && 
-            playerState.state != PlayerState.State.slip)
+            playerState.state != PlayerState.State.slip &&
+            playerState.state != PlayerState.State.dash)
         {
             movement.Move();
+        }
+        
+        if (playerState.state != PlayerState.State.grab && 
+            playerState.state != PlayerState.State.climbUp && 
+            playerState.state != PlayerState.State.climbDown && 
+            playerState.state != PlayerState.State.slip)
+        {
             movement.Flip();
         }
 
@@ -95,6 +107,7 @@ public class Player : MonoBehaviour
 
         if (indicators.onGround)
         {
+            dash.dashRefresh();
             fatigue.nullifyFatigue();
         }
 
@@ -103,14 +116,21 @@ public class Player : MonoBehaviour
             StartCoroutine(fatigue.FlashPlayer());
         }
 
-        //PseudoParallax();
     }
     
     private void manageState()
     {
-        rb.gravityScale = jump.basicGravityScale;   
         switch(playerState.state)
         {
+            case PlayerState.State.dash:
+            {
+                if (!dash.isDashing)
+                {
+                    dash.DashStart();
+                }
+
+                break;
+            }
             case PlayerState.State.death:
             {
                 rb.constraints = RigidbodyConstraints2D.FreezeAll;
@@ -119,6 +139,8 @@ public class Player : MonoBehaviour
             }
             case PlayerState.State.pullUp:
             {
+                rb.gravityScale = jump.basicGravityScale;   
+
                 jump.pullUpJump();
                 indicators.wallJump = true;
 
@@ -127,6 +149,8 @@ public class Player : MonoBehaviour
             }
             case PlayerState.State.jump:
             {
+                rb.gravityScale = jump.basicGravityScale;   
+
                 jump.Jump();
                 particles.spawnJumpingDust();
                 playerState.state = PlayerState.State.flight;
@@ -135,6 +159,8 @@ public class Player : MonoBehaviour
             }
             case PlayerState.State.wallJump:
             {
+                rb.gravityScale = jump.basicGravityScale;   
+
                 rb.velocity = new Vector2(rb.velocity.x, 0f);
                 jump.Jump();
                 fatigue.JumpTick();
@@ -182,20 +208,27 @@ public class Player : MonoBehaviour
             }
             case PlayerState.State.fall:
             {
+                rb.gravityScale = jump.basicGravityScale;   
                 indicators.wallJump = false;
 
                 break;
             }
             case PlayerState.State.flight:
             {
+                rb.gravityScale = jump.basicGravityScale;   
+
                 break;
             }
             case PlayerState.State.walk:
             {
+                rb.gravityScale = jump.basicGravityScale;   
+
                 break;
             }
             case PlayerState.State.idle:
             {
+                rb.gravityScale = jump.basicGravityScale;   
+
                 break;
             }
             default:
@@ -203,99 +236,6 @@ public class Player : MonoBehaviour
                 break;
             }
         }
-
-    }
-
-    void getState()
-    {
-        /*
-        if (onPullUp && wallJump == false)
-        {
-            wallJump = true;
-            return State.jump;
-            //tossAsideTimer = tossAsideDelay;
-        }
-
-        if (onWall && jumpPressed && (state == State.grab || state == State.climbDown || state == State.climbUp))
-        {
-            rb.velocity = new Vector2(rb.velocity.x, 0f);
-            Jump();
-            fatigue += 2.5f;
-
-            wallJump = true;
-
-            textState = "WallJump";
-            return State.wallJump;
-        }
-
-        if (onWall && grabPressed && !wallJump)
-        {
-            rb.gravityScale = 0;
-            rb.velocity = new Vector2(rb.velocity.x, 0f);
-
-            if (fatigue >= maxFatigue)
-            {
-                textState = "Slip";        
-
-                return State.climbDown;
-            }
-            else if (climbUp)
-            {
-                rb.velocity = new Vector2(rb.velocity.x, climbUpSpeed);
-
-                textState = "ClimbUp";
-
-                fatigue += Time.deltaTime;
-                return State.climbUp;
-            }
-            else if (climbDown)
-            {
-                rb.velocity = new Vector2(rb.velocity.x, climbDownSpeed);
-
-                textState = "ClimbDown";
-        
-                fatigue += Time.deltaTime;
-                return State.climbDown;
-            }
-
-            textState = "Grab";
-
-            fatigue += Time.deltaTime;
-            return State.grab;   
-        }
-
-        if ((coyoteTimeCounter > 0f) && (jumpBufferCounter > 0f))
-        {
-            Jump();   
-            spawnJumpingDust();
-
-            textState = "Jump";
-
-            return State.jump;
-        }
-
-        if (rb.velocity.y < -jumpBorder)
-        {
-            textState = "Fall";
-
-            wallJump = false;
-            return State.fall;
-        }
-
-        if (rb.velocity.y > jumpBorder)
-        {
-            textState = "Jump";
-            return State.jump;
-        }
-
-        if (rb.velocity.x != 0)
-        {
-            textState = "Walk";
-            return State.walk;
-        }
-
-        textState = "Idle";
-        */
 
     }
 
@@ -396,6 +336,12 @@ public class Player : MonoBehaviour
             {
                 textState = "idle";
 
+                break;
+            }
+            case PlayerState.State.dash:
+            {
+                textState = "dash";
+                
                 break;
             }
             default:
