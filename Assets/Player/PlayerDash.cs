@@ -125,6 +125,7 @@ public class PlayerDash : MonoBehaviour
 
     public void Dash() 
     {
+        FindObjectOfType<RippleEffect>().Emit(Camera.main.WorldToViewportPoint(transform.position));
         rb.velocity = new Vector2(horizontalBuffer, verticalBuffer).normalized * dashPower;
     }
 
