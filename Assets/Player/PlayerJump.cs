@@ -22,11 +22,14 @@ public class PlayerJump : MonoBehaviour
     private Indicators indicators;
     private PlayerInput input;
 
+    private SpriteRenderer sprite;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         indicators = GetComponent<Indicators>();
         input = GetComponent<PlayerInput>();
+        sprite = GetComponent<SpriteRenderer>();
 
         basicGravityScale = rb.gravityScale;  
     }
@@ -59,6 +62,8 @@ public class PlayerJump : MonoBehaviour
     {
         rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
         jumpBufferCounter = 0f;
+
+        sprite.size = new Vector2(1, 0.5f);
     }
 
     public void pullUpJump()

@@ -17,6 +17,7 @@ public class PlayerDash : MonoBehaviour
     private PlayerJump jump;
     private PlayerInput input;
     private Player player;
+    private PlayerParticles particles;
 
     private float dashTime = 0.2f;
     private float dashTimeCounter;
@@ -36,6 +37,7 @@ public class PlayerDash : MonoBehaviour
         jump = GetComponent<PlayerJump>();
         input = GetComponent<PlayerInput>();
         player = GetComponent<Player>();
+        particles = GetComponent<PlayerParticles>();
     }
 
     void Update()
@@ -84,6 +86,7 @@ public class PlayerDash : MonoBehaviour
     public void DashStart()
     {
         StartCoroutine(DashManager());
+        particles.spawnDashDust();
     }
 
     IEnumerator DashManager()
