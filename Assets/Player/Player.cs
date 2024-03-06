@@ -101,7 +101,7 @@ public class Player : MonoBehaviour
 
     [Header("Fatigue")]
     
-    public float fatigue = 0;
+    private float fatigue = 0;
     [SerializeField] private float maxFatigue = 10f;
 
     //

@@ -8,13 +8,13 @@ public class DebugMode : MonoBehaviour
     private Player playerComponent;
     private static Stopwatch timer = new();
     private GameObject checkpoint;
-    private Checkpoint checkpointComponent;
+    private checkpoint checkpointComponent;
 
 
     private int deathCount = 0;
-    private bool deathHandled = false;
+    private bool isDeathHandled = false;
     private int minutes = -1;
-    private bool minuteLeft = true;
+    private bool isMinuteLeft = true;
 
     private const string DeathCountKey = "DeathCount";
     private const string Minutes = "Minutes";
@@ -27,7 +27,7 @@ public class DebugMode : MonoBehaviour
         deathCount = PlayerPrefs.GetInt(DeathCountKey, 0);
         minutes = PlayerPrefs.GetInt(Minutes, 0);
         checkpoint = GameObject.Find("Checkpoint");
-        checkpointComponent = checkpoint.GetComponent<Checkpoint>();    
+        checkpointComponent = checkpoint.GetComponent<checkpoint>();    
       
     }
     // Update is called once per frame
@@ -39,27 +39,27 @@ public class DebugMode : MonoBehaviour
             ClickListener();
         }
 
-        if (playerComponent.state == Player.State.death && !deathHandled)
+        if (playerComponent.state == Player.State.death && !isDeathHandled)
         {
             deathCount++;
-            deathHandled = true;
+            isDeathHandled = true;
 
             PlayerPrefs.SetInt(DeathCountKey, deathCount);
             PlayerPrefs.Save();
         }
         else if (playerComponent.state != Player.State.death)
         {
-            deathHandled = false;
+            isDeathHandled = false;
         }
 
 
         if (timer.Elapsed.Seconds > 0 && timer.Elapsed.Seconds <= 59)
         {
-            minuteLeft = false;
+            isMinuteLeft = false;
             
-        } else if (timer.Elapsed.Seconds == 0 && !minuteLeft)
+        } else if (timer.Elapsed.Seconds == 0 && !isMinuteLeft)
         {
-            minuteLeft = true;
+            isMinuteLeft = true;
             minutes++;
             PlayerPrefs.SetInt(Minutes, minutes);
             PlayerPrefs.Save();
@@ -95,11 +95,10 @@ public class DebugMode : MonoBehaviour
             player.transform.position.ToString());
         PrintOnScreen(0, 20, "Player State: " +
             playerComponent.state.ToString());
-        PrintOnScreen(0, 30, "Fatugie: " + playerComponent.fatigue.ToString());
-        PrintOnScreen(0, 40, "Deaths: " + deathCount.ToString());
-        PrintOnScreen(0, 50, "Timer: " + timer.Elapsed.Seconds.ToString());
-        PrintOnScreen(0, 60, "Minutes spent: " + minutes.ToString());
-        PrintOnScreen(0, 70, "Current checkpoint: " + checkpointComponent.index.ToString());
+        PrintOnScreen(0, 30, "Deaths: " + deathCount.ToString());
+        PrintOnScreen(0, 40, "Timer: " + timer.Elapsed.Seconds.ToString());
+        PrintOnScreen(0, 50, "Minutes spent: " + minutes.ToString());
+        PrintOnScreen(0, 60, "Current checkpoint: " + checkpointComponent.index.ToString());
     }
 
     void PrintOnScreen(int x, int y, string str)

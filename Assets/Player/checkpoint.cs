@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Checkpoint : MonoBehaviour
+public class checkpoint : MonoBehaviour
 {
     public Transform player;
     public int index;
