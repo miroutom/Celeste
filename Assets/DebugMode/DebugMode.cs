@@ -5,7 +5,7 @@ public class DebugMode : MonoBehaviour
 {
     static bool debugMode = false;
     private GameObject player;
-    private Player playerComponent;
+    private PlayerState playerStateComponent;
     private static Stopwatch timer = new();
     private GameObject checkpoint;
     private checkpoint checkpointComponent;
@@ -23,7 +23,7 @@ public class DebugMode : MonoBehaviour
     {
         timer.Start();
         player = GameObject.Find("Player");
-        playerComponent = player.GetComponent<Player>();
+        playerStateComponent = player.GetComponent<PlayerState>();
         deathCount = PlayerPrefs.GetInt(DeathCountKey, 0);
         minutes = PlayerPrefs.GetInt(Minutes, 0);
         checkpoint = GameObject.Find("Checkpoint");
@@ -39,7 +39,7 @@ public class DebugMode : MonoBehaviour
             ClickListener();
         }
 
-        if (playerComponent.state == Player.State.death && !isDeathHandled)
+        if (playerStateComponent.state == PlayerState.State.death && !isDeathHandled)
         {
             deathCount++;
             isDeathHandled = true;
@@ -47,7 +47,7 @@ public class DebugMode : MonoBehaviour
             PlayerPrefs.SetInt(DeathCountKey, deathCount);
             PlayerPrefs.Save();
         }
-        else if (playerComponent.state != Player.State.death)
+        else if (playerStateComponent.state != PlayerState.State.death)
         {
             isDeathHandled = false;
         }
@@ -94,7 +94,7 @@ public class DebugMode : MonoBehaviour
         PrintOnScreen(0, 10, "Player Position: " +
             player.transform.position.ToString());
         PrintOnScreen(0, 20, "Player State: " +
-            playerComponent.state.ToString());
+            playerStateComponent.state.ToString());
         PrintOnScreen(0, 30, "Deaths: " + deathCount.ToString());
         PrintOnScreen(0, 40, "Timer: " + timer.Elapsed.Seconds.ToString());
         PrintOnScreen(0, 50, "Minutes spent: " + minutes.ToString());

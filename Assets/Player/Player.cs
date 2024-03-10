@@ -24,7 +24,6 @@ public class Player : MonoBehaviour
     private string textOnGround = "";
     private string textFatigue = "";
 
-
     private PlayerState playerState;
     private PlayerJump jump;
     private PlayerClimb climb;
@@ -76,8 +75,6 @@ public class Player : MonoBehaviour
 
         fatigueText.text = "Fatigue: " + Math.Round(fatigue, 1) + "/" + maxFatigue;
         */
-
-        Debug.Log(rb.velocity);
     }
     void FixedUpdate()
     {

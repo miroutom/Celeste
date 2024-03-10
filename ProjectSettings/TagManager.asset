@@ -52,11 +52,14 @@ TagManager:
   - name: Grass
     uniqueID: 2050786135
     locked: 0
-  - name: Default
-    uniqueID: 0
-    locked: 0
   - name: Spikes
     uniqueID: 2153951859
+    locked: 0
+  - name: LevelTileMap
+    uniqueID: 2590396881
+    locked: 0
+  - name: Default
+    uniqueID: 0
     locked: 0
   - name: Dust
     uniqueID: 2340119431
