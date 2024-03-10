@@ -75,8 +75,6 @@ public class Player : MonoBehaviour
 
         fatigueText.text = "Fatigue: " + Math.Round(fatigue, 1) + "/" + maxFatigue;
         */
-
-        Debug.Log(rb.velocity);
     }
     void FixedUpdate()
     {

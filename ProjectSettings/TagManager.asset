@@ -15,7 +15,7 @@ TagManager:
   - UI
   - Player
   - Particles
-  - 
+  - Spikes
   - 
   - 
   - 
@@ -51,6 +51,12 @@ TagManager:
     locked: 0
   - name: Grass
     uniqueID: 2050786135
+    locked: 0
+  - name: Spikes
+    uniqueID: 2153951859
+    locked: 0
+  - name: LevelTileMap
+    uniqueID: 2590396881
     locked: 0
   - name: Default
     uniqueID: 0
