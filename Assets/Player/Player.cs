@@ -24,6 +24,7 @@ public class Player : MonoBehaviour
     private string textOnGround = "";
     private string textFatigue = "";
 
+
     private PlayerState playerState;
     private PlayerJump jump;
     private PlayerClimb climb;
