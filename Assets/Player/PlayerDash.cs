@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Callbacks;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerDash : MonoBehaviour
 {
@@ -85,6 +86,7 @@ public class PlayerDash : MonoBehaviour
 
     public void DashStart()
     {
+        Gamepad.current.SetMotorSpeeds(input.dashLowFrequency, input.dashHighFrequency);
         StartCoroutine(DashManager());
         particles.spawnDashDust();
     }
