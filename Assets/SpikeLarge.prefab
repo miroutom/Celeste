@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4924337416980746195}
   - component: {fileID: 1861939746816409616}
   - component: {fileID: 4656304258123720730}
+  - component: {fileID: 5341484581404291535}
   m_Layer: 8
   m_Name: SpikeLarge
   m_TagString: Killer
@@ -71,8 +72,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2141015437
+  m_SortingLayer: -2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 943c45c394f36d74bb61b27abccf8c38, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -130,3 +131,16 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 10.8, y: 4.4}
   m_EdgeRadius: 0
+--- !u!114 &5341484581404291535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5332767477044681229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a9fffc44a9c68e4ea0d8b5dd73c03ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startPosition: {fileID: 4924337416980746195}
