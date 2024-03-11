@@ -13,7 +13,6 @@ public class PlayerParticles : MonoBehaviour
 
     [SerializeField] private ParticleSystem dashDust;
 
-    // Update is called once per frame
     public void spawnJumpingDust()
     {
         Instantiate(dustGameObject, transform.position + jumpingDustOffset,  Quaternion.identity);

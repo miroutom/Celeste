@@ -19,16 +19,12 @@ public class PlayerInput : MonoBehaviour
     [HideInInspector] 
     public bool grabPressed;
 
-    [Header("Gamepad properties")]
-    [SerializeField] public float dashLowFrequency;
-    [SerializeField] public float dashHighFrequency;
-
     public void Move(InputAction.CallbackContext context)
     {
         Vector2 axis = context.ReadValue<Vector2>();
 
-        horizontalInput = Mathf.Sign(axis.x)*Mathf.Ceil(Mathf.Abs(axis.x));
-        verticalInput = Mathf.Sign(axis.y)*Mathf.Ceil(Mathf.Abs(axis.y));
+        horizontalInput = Mathf.Round(axis.x);
+        verticalInput = Mathf.Round(axis.y);
     }
 
     public void Jump(InputAction.CallbackContext context)
@@ -50,7 +46,6 @@ public class PlayerInput : MonoBehaviour
     {
         Vector2 axis = context.ReadValue<Vector2>();
 
-        climbInput = Mathf.Sign(axis.y)*Mathf.Ceil(Mathf.Abs(axis.y));
-        Gamepad.current.SetMotorSpeeds(0.123f, 0.234f);
+        climbInput = Mathf.Round(axis.y);
     }
 }
