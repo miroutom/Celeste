@@ -6,7 +6,9 @@ public class DebugMode : MonoBehaviour
     static bool debugMode = false;
     private GameObject player;
     private PlayerState playerStateComponent;
+
     private Fatigue fatigueComponent;
+
     private static Stopwatch timer = new();
     private GameObject checkpoint;
     private checkpoint checkpointComponent;
@@ -25,6 +27,7 @@ public class DebugMode : MonoBehaviour
         timer.Start();
         player = GameObject.Find("Player");
         playerStateComponent = player.GetComponent<PlayerState>();
+
         fatigueComponent = player.GetComponent<Fatigue>();
         deathCount = PlayerPrefs.GetInt(DeathCountKey, 0);
         minutes = PlayerPrefs.GetInt(Minutes, 0);

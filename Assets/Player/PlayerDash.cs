@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor.Callbacks;
 using UnityEngine;
 
+
 public class PlayerDash : MonoBehaviour
 {
     [HideInInspector]
@@ -18,6 +19,7 @@ public class PlayerDash : MonoBehaviour
     private PlayerInput input;
     private Player player;
     private PlayerParticles particles;
+    private RumbleManager rumble;
 
     private float dashTime = 0.2f;
     private float dashTimeCounter;
@@ -38,6 +40,7 @@ public class PlayerDash : MonoBehaviour
         input = GetComponent<PlayerInput>();
         player = GetComponent<Player>();
         particles = GetComponent<PlayerParticles>();
+        rumble = GetComponent<RumbleManager>();
     }
 
     void Update()
@@ -84,7 +87,9 @@ public class PlayerDash : MonoBehaviour
     }
 
     public void DashStart()
-    {
+    {   
+        rumble.RumblePulse();
+
         StartCoroutine(DashManager());
         particles.spawnDashDust();
     }
@@ -105,8 +110,6 @@ public class PlayerDash : MonoBehaviour
 
             yield return new WaitForSeconds(0.1f);
         }
-
-
 
         isDashing = false;
         jump.refreshGravity();

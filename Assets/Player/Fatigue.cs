@@ -9,7 +9,6 @@ public class Fatigue : MonoBehaviour
     public float fatigue = 0;
     [SerializeField] public float maxFatigue = 10f;
 
-    //
     private Color playerColor;
     public bool isFlashing = false;
     [SerializeField] private float flashingFrequency = 0.2f;
@@ -19,16 +18,19 @@ public class Fatigue : MonoBehaviour
 
     private SpriteRenderer sprite;
 
-    // Start is called before the first frame update
+    private RumbleManager rumble;
+
     void Start()
     {
         sprite = GetComponent<SpriteRenderer>();      
         playerColor = sprite.color;
+        rumble = GetComponent<RumbleManager>();
     }
     
     public IEnumerator FlashPlayer()
     {
         isFlashing = true;
+        rumble.startFatigueRumble();
 
         while(fatigue >= maxFatigue)
         {
@@ -45,6 +47,7 @@ public class Fatigue : MonoBehaviour
         }
 
         isFlashing = false;
+        rumble.endFatigueRumble();
         sprite.color = playerColor;
 
         yield break;
