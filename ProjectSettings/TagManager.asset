@@ -41,6 +41,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Canvas
+    uniqueID: 1692311261
+    locked: 0
   - name: Sky
     uniqueID: 963608159
     locked: 0
