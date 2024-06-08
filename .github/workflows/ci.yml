@@ -5,8 +5,10 @@ on:
     branches:
       - main
       - dev
-  pull_request: {}
-
+  pull_request: 
+    branches:
+        - main
+        - dev
 env:
     UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
     UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
@@ -74,7 +76,7 @@ jobs:
 
       - name: Verify code style
         run: |
-          dotnet format --check ./Celeste.sln
+          dotnet format --check
 
       - name: Build project
         run: |
