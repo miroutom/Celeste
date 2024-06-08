@@ -74,7 +74,7 @@ jobs:
 
       - name: Verify code style
         run: |
-          dotnet format --check Celeste.sln
+          dotnet format --check ./Celeste.sln
 
       - name: Build project
         run: |
