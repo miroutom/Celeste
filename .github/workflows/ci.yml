@@ -76,7 +76,7 @@ jobs:
 
       - name: Verify code style
         run: |
-          dotnet format --check
+          dotnet format --check --verbosity diagnostic **/Celeste.sln **/Assembly-CSharp.csproj
 
       - name: Build project
         run: |
