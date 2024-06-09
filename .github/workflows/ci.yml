@@ -74,22 +74,8 @@ jobs:
       - name: Install dotnet-format tool
         run: dotnet tool install -g dotnet-format
 
-      - name: Format code
-        run: dotnet format --fix-whitespace --fix-style
-
-      - name: Check for changes
-        id: git-check
-        run: |
-          git config --global user.name 'github-actions'
-          git config --global user.email 'github-actions@github.com'
-          git diff --quiet || echo "Changes detected" > changes.log
-
-      - name: Commit and push changes
-        if: steps.git-check.outputs.changes == 'true'
-        run: |
-          git add .
-          git commit -m "Apply code style fixes"
-          git push origin HEAD:${{ github.head_ref }}
+      - name: Check code
+        run: dotnet format --verbosity diagnostic
 
       - name: Build project
         run: |
