@@ -77,15 +77,15 @@ jobs:
       - name: Check code
         run: dotnet format ./Celeste.sln --verbosity diagnostic
 
-      - name: Build project
-        run: |
-          ./Unity/Editor/Unity -quit -batchmode -projectPath . -buildTarget StandaloneWindows64 -buildPath build
-          mkdir -p artifacts
-          mv build/*.exe artifacts/
+      - name: Create build directory
+        run: mkdir ./Build
         
-      - name: Build repository
+      - name: Build project
         uses: game-ci/unity-builder@v4
-
-      
         with:
-          targetPlatform: WebGL
+          targetPlatform: StandaloneWindows64 
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          path: ./Build
