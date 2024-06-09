@@ -71,18 +71,18 @@ jobs:
       - name: Install dotnet-format tool
         run: dotnet tool install -g dotnet-format
 
-      - name: Verify code style
-        run: |
-          dotnet format --check Celeste.sln
+      - name: Check code
+        run: dotnet format ./Celeste.sln --verbosity diagnostic
 
+      - name: Create build directory
+        run: mkdir ./Build
+        
       - name: Build project
-        run: |
-          ./Unity/Editor/Unity -quit -batchmode -projectPath . -buildTarget StandaloneWindows64 -buildPath build
-          mkdir -p artifacts
-          mv build/*.exe artifacts/
-        
-      - name: Build repository
         uses: game-ci/unity-builder@v4
-        
         with:
-          targetPlatform: WebGL
+          targetPlatform: StandaloneWindows64 
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          path: ./Build
