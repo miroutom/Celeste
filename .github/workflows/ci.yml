@@ -75,7 +75,7 @@ jobs:
         run: dotnet tool install -g dotnet-format
 
       - name: Check code
-        run: dotnet format --verbosity diagnostic
+        run: dotnet format ./Celeste.sln --verbosity diagnostic
 
       - name: Build project
         run: |
