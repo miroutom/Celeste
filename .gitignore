@@ -33,8 +33,8 @@
 ExportedObj/
 .consulo/
 *.csproj
-*.unityproj
 *.sln
+*.unityproj
 *.suo
 *.tmp
 *.user
@@ -73,3 +73,10 @@ crashlytics-build.properties
 
 # VSCode
 .vsconfig
+
+
+# Artifacts
+artifacts/
+playmode-artifacts/
+editmode-artifacts/
+standalone-artifacts/
