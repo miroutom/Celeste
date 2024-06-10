@@ -5,7 +5,6 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
 public class Player : MonoBehaviour
 {
     private Rigidbody2D rb;
@@ -122,7 +121,7 @@ public class Player : MonoBehaviour
         {
             case PlayerState.State.dash:
             {
-                if (!dash.isDashing)
+                if (!dash.hasDashed)
                 {
                     dash.DashStart();
                 }
@@ -196,7 +195,6 @@ public class Player : MonoBehaviour
             }
             case PlayerState.State.grab:
             {
-
                 rb.velocity = new Vector2(rb.velocity.x, 0f);
                 rb.gravityScale = 0;
 
