@@ -77,12 +77,10 @@ jobs:
       - name: Check code
         run: dotnet format ./Celeste.sln --verbosity diagnostic
 
-      - name: Create build directory
-        run: mkdir ./Build
-        
       - name: Build project
         uses: game-ci/unity-builder@v4
         with:
+          path: ${{ matrix.projectPath }}-Build
           targetPlatform: StandaloneWindows64 
 
       - name: Upload artifact
