@@ -73,3 +73,10 @@ crashlytics-build.properties
 
 # VSCode
 .vsconfig
+
+
+# Artifacts
+artifacts/
+playmode-artifacts/
+editmode-artifacts/
+standalone-artifacts/
