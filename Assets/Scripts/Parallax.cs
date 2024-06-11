@@ -6,16 +6,18 @@ public class Parallax : MonoBehaviour
 {
     public GameObject GameCamera;
     public float GameParallax;
-    float StartPosition;
+    float StartPositionX, StartPositionY;
 
     void Start()
     {
-        StartPosition = transform.position.x;
+        StartPositionX = transform.position.x;
+        StartPositionY = transform.position.y;
     }
 
     void Update()
     {
         float DistanceX = (GameCamera.transform.position.x * (1 - GameParallax));
-        transform.position = new Vector3(StartPosition + DistanceX, transform.position.y, transform.position.z);
+        float DistanceY = (GameCamera.transform.position.y * (1 - GameParallax));
+        transform.position = new Vector3(StartPositionX + DistanceX, StartPositionY + DistanceY, transform.position.z);
     }
 }
