@@ -1,13 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerParticles : MonoBehaviour
-{
+public class PlayerParticles : MonoBehaviour {
     [Header("Particles")]
 
-    [SerializeField] private Vector3 jumpingDustOffset; 
-    [SerializeField] private Vector3 landingDustOffset; 
+    [SerializeField] private Vector3 jumpingDustOffset;
+    [SerializeField] private Vector3 landingDustOffset;
 
     [SerializeField] private GameObject dustGameObject;
 
@@ -20,13 +17,11 @@ public class PlayerParticles : MonoBehaviour
 
     private Rigidbody2D rb;
 
-    void Start()
-    {
+    void Start() {
         rb = GetComponent<Rigidbody2D>();
     }
 
-    void Update()
-    {
+    void Update() {
         /*
         InitializeIfNeeded();   
     
@@ -47,24 +42,20 @@ public class PlayerParticles : MonoBehaviour
         dashDust.SetParticles(dashDustParticles, numParticlesAlive); */
     }
 
-    public void spawnJumpingDust()
-    {
-        Instantiate(dustGameObject, transform.position + jumpingDustOffset,  Quaternion.identity);
+    public void spawnJumpingDust() {
+        Instantiate(dustGameObject, transform.position + jumpingDustOffset, Quaternion.identity);
     }
 
-    public void spawnLandingDust()
-    {
-        Instantiate(dustGameObject, transform.position + jumpingDustOffset,  Quaternion.identity);
+    public void spawnLandingDust() {
+        Instantiate(dustGameObject, transform.position + jumpingDustOffset, Quaternion.identity);
     }
 
-    public void spawnDashTail()
-    {
+    public void spawnDashTail() {
         dashTail.time = 0;
         dashTail.Play();
     }
 
-    public void spawnDashDust()
-    {
+    public void spawnDashDust() {
         GameObject newObj = Instantiate(dashDustObject, transform.position, Quaternion.identity);
         newObj.transform.parent = transform;
         ParticleSystem particleSystem = newObj.GetComponent<ParticleSystem>();
@@ -74,12 +65,12 @@ public class PlayerParticles : MonoBehaviour
         velocityOverLifetime.yMultiplier = rb.velocity.y * dashDustSpeed;
     }
 
-/*
-    void InitializeIfNeeded()
-    {
-        if (dashDustParticles == null || dashDustParticles.Length < dashDust.main.maxParticles)
+    /*
+        void InitializeIfNeeded()
         {
-            dashDustParticles = new ParticleSystem.Particle[dashDust.main.maxParticles];
-        }
-    }*/
+            if (dashDustParticles == null || dashDustParticles.Length < dashDust.main.maxParticles)
+            {
+                dashDustParticles = new ParticleSystem.Particle[dashDust.main.maxParticles];
+            }
+        }*/
 }

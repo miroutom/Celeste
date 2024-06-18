@@ -1,8 +1,7 @@
-using UnityEngine;
 using System.Diagnostics;
+using UnityEngine;
 
-public class DebugMode : MonoBehaviour
-{
+public class DebugMode : MonoBehaviour {
     static bool debugMode = false;
     private GameObject player;
     private PlayerState playerStateComponent;
@@ -22,8 +21,7 @@ public class DebugMode : MonoBehaviour
     private const string DeathCountKey = "DeathCount";
     private const string Minutes = "Minutes";
 
-    void Start()
-    {
+    void Start() {
         timer.Start();
         player = GameObject.Find("Player");
         playerStateComponent = player.GetComponent<PlayerState>();
@@ -32,38 +30,33 @@ public class DebugMode : MonoBehaviour
         deathCount = PlayerPrefs.GetInt(DeathCountKey, 0);
         minutes = PlayerPrefs.GetInt(Minutes, 0);
         checkpoint = GameObject.Find("Checkpoint");
-        checkpointComponent = checkpoint.GetComponent<checkpoint>();    
-      
+        checkpointComponent = checkpoint.GetComponent<checkpoint>();
+
     }
     // Update is called once per frame
-    void Update()
-    {
+    void Update() {
 
-        if (Input.GetKeyDown(KeyCode.F12))
-        {
+        if (Input.GetKeyDown(KeyCode.F12)) {
             ClickListener();
         }
 
-        if (playerStateComponent.state == PlayerState.State.death && !isDeathHandled)
-        {
+        if (playerStateComponent.state == PlayerState.State.death && !isDeathHandled) {
             deathCount++;
             isDeathHandled = true;
 
             PlayerPrefs.SetInt(DeathCountKey, deathCount);
             PlayerPrefs.Save();
         }
-        else if (playerStateComponent.state != PlayerState.State.death)
-        {
+        else if (playerStateComponent.state != PlayerState.State.death) {
             isDeathHandled = false;
         }
 
 
-        if (timer.Elapsed.Seconds > 0 && timer.Elapsed.Seconds <= 59)
-        {
+        if (timer.Elapsed.Seconds > 0 && timer.Elapsed.Seconds <= 59) {
             isMinuteLeft = false;
-            
-        } else if (timer.Elapsed.Seconds == 0 && !isMinuteLeft)
-        {
+
+        }
+        else if (timer.Elapsed.Seconds == 0 && !isMinuteLeft) {
             isMinuteLeft = true;
             minutes++;
             PlayerPrefs.SetInt(Minutes, minutes);
@@ -71,45 +64,38 @@ public class DebugMode : MonoBehaviour
         }
     }
 
-    void ClickListener()
-    {
+    void ClickListener() {
         debugMode = !debugMode;
-        if (debugMode)
-        {
+        if (debugMode) {
             UnityEngine.Debug.Log("Debug mode activated!");
         }
-        else
-        {
+        else {
             UnityEngine.Debug.Log("Debug mode deactivated!");
         }
     }
 
-    void OnGUI()
-    {
-        if (debugMode)
-        {
+    void OnGUI() {
+        if (debugMode) {
             DebugModeActivated();
         }
 
     }
 
-    void DebugModeActivated()
-    {
+    void DebugModeActivated() {
         PrintOnScreen(0, 0, "Debug information");
-        PrintOnScreen(0, 10, "Player Position: " +
+        PrintOnScreen(0, 20, "Player Position: " +
             player.transform.position.ToString());
-        PrintOnScreen(0, 20, "Player State: " +
+        PrintOnScreen(0, 40, "Player State: " +
             playerStateComponent.state.ToString());
-        PrintOnScreen(0, 30, "Player Fatigue: " +
+        PrintOnScreen(0, 60, "Player Fatigue: " +
             fatigueComponent.fatigue.ToString());
-        PrintOnScreen(0, 40, "Deaths: " + deathCount.ToString());
-        PrintOnScreen(0, 50, "Timer: " + timer.Elapsed.Seconds.ToString());
-        PrintOnScreen(0, 60, "Minutes spent: " + minutes.ToString());
-        PrintOnScreen(0, 70, "Current checkpoint: " + checkpointComponent.index.ToString());
+        PrintOnScreen(0, 80, "Deaths: " + deathCount.ToString());
+        PrintOnScreen(0, 100, "Timer: " + timer.Elapsed.Seconds.ToString());
+        PrintOnScreen(0, 120, "Minutes spent: " + minutes.ToString());
+        PrintOnScreen(0, 130, "Current checkpoint: " + checkpointComponent.index.ToString());
     }
 
-    void PrintOnScreen(int x, int y, string str)
-    {
+    void PrintOnScreen(int x, int y, string str) {
         GUI.Label(new Rect(x, y, Screen.width, Screen.height), str);
     }
 }

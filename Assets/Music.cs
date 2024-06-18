@@ -1,25 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Music : MonoBehaviour
-{
+public class Music : MonoBehaviour {
     [SerializeField] private AudioSource musicSource;
     static float currentMusicTime = 0.0f;
 
     public AudioClip background;
 
 
-    private void Start()
-    {
+    private void Start() {
         musicSource.clip = background;
 
         musicSource.Play();
         musicSource.time = currentMusicTime;
     }
 
-    void OnSceneLoaded()
-    {
+    void OnSceneLoaded() {
         currentMusicTime = musicSource.time;
     }
 }
