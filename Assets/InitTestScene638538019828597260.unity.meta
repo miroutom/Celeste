@@ -1,5 +1,10 @@
 fileFormatVersion: 2
-guid: edc5c2d35eda59c46b28495c5ccc7049
+<<<<<<<< HEAD:Assets/InitTestScene638538019828597260.unity.meta
+guid: d712b10ea79526e489edb6e2a1fde264
+========
+guid: c9cf484f2e10a094cb83450ff355b596
+folderAsset: yes
+>>>>>>>> main:Assets/ForestTileMap/DirtBackgroundTiles.meta
 DefaultImporter:
   externalObjects: {}
   userData: 
