@@ -94,6 +94,7 @@ jobs:
         with:
           path: ./Assets/Scenes/Level1.unity
           targetPlatform: StandaloneWindows64
+          skipActivation: true
 
   build-and-test-push:
     needs: build-and-test
