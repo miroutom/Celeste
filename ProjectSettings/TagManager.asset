@@ -17,7 +17,7 @@ TagManager:
   - Player
   - Particles
   - Spikes
-  - 
+  - Background
   - 
   - 
   - 
@@ -41,6 +41,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Canvas
+    uniqueID: 1692311261
+    locked: 0
   - name: Sky
     uniqueID: 963608159
     locked: 0
@@ -52,6 +55,9 @@ TagManager:
     locked: 0
   - name: Grass
     uniqueID: 2050786135
+    locked: 0
+  - name: Background
+    uniqueID: 3026730979
     locked: 0
   - name: Spikes
     uniqueID: 2153951859
