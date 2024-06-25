@@ -72,6 +72,7 @@
     <Compile Include="Assets\Player\RumbleManager.cs" />
     <Compile Include="Assets\DebugMode\DebugMode.cs" />
     <Compile Include="Assets\Player\PlayerJump.cs" />
+    <Compile Include="Assets\Scripts\Parallax.cs" />
     <Compile Include="Assets\ForestTileMap\Spikes\SpikesMovement.cs" />
     <Compile Include="Assets\Particles\Dust\Dust.cs" />
     <Compile Include="Assets\Player\PlayerClimb.cs" />
@@ -80,6 +81,7 @@
     <Compile Include="Assets\Player\PlayerInput.cs" />
     <Compile Include="Assets\DialogueSystem\Scripts\Dialogue.cs" />
     <Compile Include="Assets\Scenes\Menu.cs" />
+    <Compile Include="Assets\Scripts\PauseMenu.cs" />
     <Compile Include="Assets\Player\PlayerState.cs" />
     <Compile Include="Assets\Player\StaticData.cs" />
     <Compile Include="Assets\DialogueSystem\Scripts\DialogueManager.cs" />

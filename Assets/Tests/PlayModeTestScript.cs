@@ -55,9 +55,6 @@ public class PlayModeTestScript : MonoBehaviour {
         dialogue = new Dialogue();
         dialogue.name = "Dialogue1";
         dialogue.sentences = new string[] { "Hello, world!" };
-
-        menu = GameObject.FindObjectOfType<Menu>();
-
     }
 
     [UnityTest]
@@ -231,19 +228,47 @@ public class PlayModeTestScript : MonoBehaviour {
     //    Assert.IsFalse(dialogueAnimator.GetBool("dialogueOpen"));
     //}
 
-    //[UnityTest]
-    //public IEnumerator TestMenuLoadScene() {
-    //    menu.Play();
+    [UnityTest]
+    public IEnumerator TestSceneMenuLoadApplication() {
+        SceneManager.LoadScene("Menu");
+        yield return null;
 
-    //    yield return null;
-    //    Assert.AreEqual(2, SceneManager.GetActiveScene().buildIndex);
-    //}
+        menu = GameObject.FindObjectOfType<Menu>();
+        menu.Play();
 
-    //[UnityTest]
-    //public IEnumerator TestMenuExitApplication() {
-    //    menu.Exit();
+        yield return null;
+        Assert.AreEqual(1, SceneManager.GetActiveScene().buildIndex);
+    }
 
-    //    yield return null;
-    //    Assert.IsFalse(Application.isPlaying);
-    //}
+    [UnityTest]
+    public IEnumerator TestScenePauseMenuPauseApplication() {
+        PauseMenu pauseMenu = GameObject.FindObjectOfType<PauseMenu>();
+        pauseMenu.Pause();
+
+        yield return null;
+        Assert.IsTrue(PauseMenu.PauseGame);
+        Assert.IsTrue(pauseMenu.PauseMenuObject.activeSelf);
+
+    }
+
+    [UnityTest]
+    public IEnumerator TestScenePauseMenuResumeApplication() {
+        PauseMenu pauseMenu = GameObject.FindObjectOfType<PauseMenu>();
+
+        pauseMenu.Resume();
+        yield return null;
+
+        Assert.IsFalse(PauseMenu.PauseGame);
+        Assert.IsFalse(pauseMenu.PauseMenuObject.activeSelf);
+        Assert.AreEqual(1, SceneManager.GetActiveScene().buildIndex);
+    }
+
+    [UnityTest]
+    public IEnumerator TestScenePauseMenuLoadMainMenu() {
+        PauseMenu pauseMenu = GameObject.FindObjectOfType<PauseMenu>();
+        pauseMenu.LoadMenu();
+        yield return null;
+
+        Assert.AreEqual("Menu", SceneManager.GetActiveScene().name);
+    }
 }
