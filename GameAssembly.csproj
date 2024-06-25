@@ -63,29 +63,37 @@
     <Compile Include="Assets\CameraRoom\CameraShake.cs" />
     <Compile Include="Assets\CameraRoom\Room.cs" />
     <Compile Include="Assets\Player\Fatigue.cs" />
+    <Compile Include="Assets\Scripts\CollectableSaveLoader.cs" />
     <Compile Include="Assets\Player\PlayerDash.cs" />
     <Compile Include="Assets\Player\Collectable_Picker.cs" />
     <Compile Include="Assets\DialogueSystem\Scripts\DialogueTrigger.cs" />
     <Compile Include="Assets\Player\PlayerParticles.cs" />
     <Compile Include="Assets\Player\Indicators.cs" />
+    <Compile Include="Assets\Scripts\SaveLoadManager.cs" />
     <Compile Include="Assets\Music.cs" />
     <Compile Include="Assets\Player\RumbleManager.cs" />
     <Compile Include="Assets\DebugMode\DebugMode.cs" />
     <Compile Include="Assets\Player\PlayerJump.cs" />
+    <Compile Include="Assets\Scripts\Parallax.cs" />
     <Compile Include="Assets\ForestTileMap\Spikes\SpikesMovement.cs" />
     <Compile Include="Assets\Particles\Dust\Dust.cs" />
     <Compile Include="Assets\Player\PlayerClimb.cs" />
     <Compile Include="Assets\ForestTileMap\backgroundLoop.cs" />
     <Compile Include="Assets\Player\RippleEffect\RippleEffect.cs" />
     <Compile Include="Assets\Player\PlayerInput.cs" />
+    <Compile Include="Assets\Scripts\CollectableStorage.cs" />
     <Compile Include="Assets\DialogueSystem\Scripts\Dialogue.cs" />
     <Compile Include="Assets\Scenes\Menu.cs" />
+    <Compile Include="Assets\Scripts\Repository.cs" />
+    <Compile Include="Assets\Scripts\PauseMenu.cs" />
+    <Compile Include="Assets\Menu\Options.cs" />
     <Compile Include="Assets\Player\PlayerState.cs" />
     <Compile Include="Assets\Player\StaticData.cs" />
     <Compile Include="Assets\DialogueSystem\Scripts\DialogueManager.cs" />
     <Compile Include="Assets\Player\Shadow\Shadow.cs" />
     <Compile Include="Assets\Player\Player.cs" />
     <Compile Include="Assets\Player\PlayerAnimation.cs" />
+    <Compile Include="Assets\Scripts\CollectableDestroyer.cs" />
     <Compile Include="Assets\DialogueSystem\Scripts\DialogueAnimator.cs" />
     <Compile Include="Assets\Player\PlayerMovement.cs" />
     <Compile Include="Assets\Player\checkpoint.cs" />
@@ -499,6 +507,10 @@
     </Reference>
     <Reference Include="Castle.Core">
       <HintPath>Assets\Plugins\Castle.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Library\PackageCache\com.unity.nuget.newtonsoft-json@3.2.1\Runtime\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.VisualScripting.TextureAssets">

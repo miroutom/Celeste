@@ -21,9 +21,6 @@ public class PlayModeTestScript : MonoBehaviour {
     private GameObject collectable;
     private Collectable_Picker collectablePicker;
 
-    private DialogueManager dialogueManager;
-    private Dialogue dialogue;
-
     private Menu menu;
 
     private SpriteRenderer spriteRender;
@@ -48,16 +45,8 @@ public class PlayModeTestScript : MonoBehaviour {
         spriteRender = playerObject.GetComponent<SpriteRenderer>();
 
 
-        collectable = GameObject.Find("Collectable");
+        collectable = GameObject.FindGameObjectWithTag("Collectable");
         collectablePicker = GameObject.FindObjectOfType<Collectable_Picker>();
-
-        dialogueManager = GameObject.FindObjectOfType<DialogueManager>();
-        dialogue = new Dialogue();
-        dialogue.name = "Dialogue1";
-        dialogue.sentences = new string[] { "Hello, world!" };
-
-        menu = GameObject.FindObjectOfType<Menu>();
-
     }
 
     [UnityTest]
@@ -212,38 +201,50 @@ public class PlayModeTestScript : MonoBehaviour {
         Assert.IsTrue(collectable == null || collectable.Equals(null));
     }
 
+    [UnityTest]
+    public IEnumerator TestSceneMenuLoadApplication() {
+        SceneManager.LoadScene("Menu");
+        yield return null;
 
-    //[UnityTest]
-    //public IEnumerator TestDialogueStarted() {
-    //    Animator dialogueAnimator = dialogueManager.GetComponent<Animator>();
-    //    dialogueManager.StartDialogue(dialogue);
+        menu = GameObject.FindObjectOfType<Menu>();
+        menu.Play();
 
-    //    yield return null;
-    //    Assert.IsTrue(dialogueAnimator.GetBool("dialogueOpen"));
-    //}
+        yield return null;
+        Assert.AreEqual(1, SceneManager.GetActiveScene().buildIndex);
+    }
 
-    //[UnityTest]
-    //public IEnumerator TestDialogueFinished() {
-    //    Animator dialogueAnimator = dialogueManager.GetComponent<Animator>();
-    //    dialogueManager.EndDialogue();
+    [UnityTest]
+    public IEnumerator TestScenePauseMenuPauseApplication() {
+        PauseMenu pauseMenu = GameObject.FindObjectOfType<PauseMenu>();
+        pauseMenu.Pause();
 
-    //    yield return null;
-    //    Assert.IsFalse(dialogueAnimator.GetBool("dialogueOpen"));
-    //}
+        yield return null;
+        Assert.IsTrue(PauseMenu.PauseGame);
+        Assert.IsTrue(pauseMenu.PauseMenuObject.activeSelf);
 
-    //[UnityTest]
-    //public IEnumerator TestMenuLoadScene() {
-    //    menu.Play();
+        pauseMenu.Resume();
 
-    //    yield return null;
-    //    Assert.AreEqual(2, SceneManager.GetActiveScene().buildIndex);
-    //}
+    }
 
-    //[UnityTest]
-    //public IEnumerator TestMenuExitApplication() {
-    //    menu.Exit();
+    [UnityTest]
+    public IEnumerator TestScenePauseMenuResumeApplication() {
+        PauseMenu pauseMenu = GameObject.FindObjectOfType<PauseMenu>();
 
-    //    yield return null;
-    //    Assert.IsFalse(Application.isPlaying);
-    //}
+        pauseMenu.Pause();
+        pauseMenu.Resume();
+        yield return null;
+
+        Assert.IsFalse(PauseMenu.PauseGame);
+        Assert.IsFalse(pauseMenu.PauseMenuObject.activeSelf);
+        Assert.AreEqual(1, SceneManager.GetActiveScene().buildIndex);
+    }
+
+    [UnityTest]
+    public IEnumerator TestScenePauseMenuLoadMainMenu() {
+        PauseMenu pauseMenu = GameObject.FindObjectOfType<PauseMenu>();
+        pauseMenu.LoadMenu();
+        yield return null;
+
+        Assert.AreEqual("Menu", SceneManager.GetActiveScene().name);
+    }
 }
