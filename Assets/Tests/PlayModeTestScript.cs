@@ -222,12 +222,15 @@ public class PlayModeTestScript : MonoBehaviour {
         Assert.IsTrue(PauseMenu.PauseGame);
         Assert.IsTrue(pauseMenu.PauseMenuObject.activeSelf);
 
+        pauseMenu.Resume();
+
     }
 
     [UnityTest]
     public IEnumerator TestScenePauseMenuResumeApplication() {
         PauseMenu pauseMenu = GameObject.FindObjectOfType<PauseMenu>();
 
+        pauseMenu.Pause();
         pauseMenu.Resume();
         yield return null;
 
