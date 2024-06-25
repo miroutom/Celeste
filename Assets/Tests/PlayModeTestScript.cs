@@ -21,9 +21,6 @@ public class PlayModeTestScript : MonoBehaviour {
     private GameObject collectable;
     private Collectable_Picker collectablePicker;
 
-    private DialogueManager dialogueManager;
-    private Dialogue dialogue;
-
     private Menu menu;
 
     private SpriteRenderer spriteRender;
@@ -48,13 +45,8 @@ public class PlayModeTestScript : MonoBehaviour {
         spriteRender = playerObject.GetComponent<SpriteRenderer>();
 
 
-        collectable = GameObject.Find("Collectable");
+        collectable = GameObject.FindGameObjectWithTag("Collectable");
         collectablePicker = GameObject.FindObjectOfType<Collectable_Picker>();
-
-        dialogueManager = GameObject.FindObjectOfType<DialogueManager>();
-        dialogue = new Dialogue();
-        dialogue.name = "Dialogue1";
-        dialogue.sentences = new string[] { "Hello, world!" };
     }
 
     [UnityTest]
@@ -208,25 +200,6 @@ public class PlayModeTestScript : MonoBehaviour {
         yield return null;
         Assert.IsTrue(collectable == null || collectable.Equals(null));
     }
-
-
-    //[UnityTest]
-    //public IEnumerator TestDialogueStarted() {
-    //    Animator dialogueAnimator = dialogueManager.GetComponent<Animator>();
-    //    dialogueManager.StartDialogue(dialogue);
-
-    //    yield return null;
-    //    Assert.IsTrue(dialogueAnimator.GetBool("dialogueOpen"));
-    //}
-
-    //[UnityTest]
-    //public IEnumerator TestDialogueFinished() {
-    //    Animator dialogueAnimator = dialogueManager.GetComponent<Animator>();
-    //    dialogueManager.EndDialogue();
-
-    //    yield return null;
-    //    Assert.IsFalse(dialogueAnimator.GetBool("dialogueOpen"));
-    //}
 
     [UnityTest]
     public IEnumerator TestSceneMenuLoadApplication() {
